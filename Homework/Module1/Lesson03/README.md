@@ -7,12 +7,12 @@
 ##### Топология сети (пример)
 
 
-https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG
+ [<img src="CLOS_topology_example.JPG">]( https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG)
 
 
 ##### Топология сети лабораторной работы 
 
-
+https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG
 
 ##### Схема адресации для инфраструктуры выбрана согласно следующих входных данных:
 - Название ЦОД - WEST (для будущего multi-site дизайна)
