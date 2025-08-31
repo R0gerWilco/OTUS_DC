@@ -74,7 +74,7 @@
 | **WEST_LEAF103**  | `192.168.1.103`  | `/24`  |
 
 ---
-#### **Пример конфигурации (Spine201 ↔ Leaf101)**
+#### **Пример конфигурации (WEST_SPINE201 ↔ WEST_LEAF101)**
 **WEST_SPINE201:**
 ```bash
 interface Ethernet1/1
