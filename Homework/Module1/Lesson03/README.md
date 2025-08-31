@@ -97,8 +97,40 @@ interface Ethernet1/6
 
 #### **Проверка доступности LEAF коммутаторов с WEST_SPINE201**
 ```bash
-show cdp ne
+WEST_SPINE201# show cdp ne
+Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
+WEST_LEAF101(9L07512J2Q8)
+                    Eth1/1         124    R S s     N9K-9000v     Eth1/6        
+WEST_LEAF102(9I4LLD12KMX)
+                    Eth1/2         127    R S s     N9K-9000v     Eth1/6        
+WEST_LEAF103(9XEJ69W8IKX)
+                    Eth1/3         167    R S s     N9K-9000v     Eth1/6        
 
+WEST_SPINE201# show ip arp
+IP ARP Table for context default
+Total number of entries: 3
+Address         Age       MAC Address     Interface       Flags
+10.201.101.2    00:02:27  5093.1500.e707  Ethernet1/1     
+10.201.102.2    00:10:37  5079.0600.f207  Ethernet1/2     
+10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3  
 ```
 
+#### **Проверка доступности LEAF коммутаторов с WEST_SPINE202**
+```bash
+WEST_SPINE202# show cdp ne
+Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
+WEST_LEAF101(9L07512J2Q8)
+                    Eth1/1         141    R S s     N9K-9000v     Eth1/7        
+WEST_LEAF102(9I4LLD12KMX)
+                    Eth1/2         121    R S s     N9K-9000v     Eth1/7        
+WEST_LEAF103(9XEJ69W8IKX)
+                    Eth1/3         178    R S s     N9K-9000v     Eth1/7     
 
+WEST_SPINE202# show ip arp
+IP ARP Table for context default
+Total number of entries: 3
+Address         Age       MAC Address     Interface       Flags
+10.202.101.2    00:09:10  5093.1500.e707  Ethernet1/1     
+10.202.102.2    00:09:10  5079.0600.f207  Ethernet1/2     
+10.202.103.2    00:08:57  5076.3c00.f707  Ethernet1/3    
+```
