@@ -10,7 +10,7 @@
  [<img src="CLOS_topology_example.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG)
 
 
-##### Топология сети лабораторной работы 
+##### Топология сети лабораторной работы PnetLAB
 
  [<img src="WEST_DC_topology.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG)
 
@@ -20,12 +20,13 @@
 - 2 Spine коммутатора Nexus  с ID (номер) коммутаторов 201 и 202
 - 3 Leaf коммутатора Nexus  с ID коммутаторов 101, 102 и 103
 - ID коммутаторов должно стать часть IP-адресации Loopback и Underlay интерфейсов
+- ID Leaf должно стать частью имени клиентских рабочих мест (VPC в терминологии PnetLAB)
 
 
 
 ### **1. Общая схема адресации**
 - **Loopback-адреса** → `10.0.0.ID/32` (где ID = номер коммутатора).  
-- **P2P-линки Spine ↔ Leaf** → `10.1.SpineID.LeafID/30` (SpineID = 201/202, LeafID = 101/102/103).  
+- **P2P-линки Spine ↔ Leaf** → `10.SpineID.LeafID.X/30` (SpineID = 201/202, LeafID = 101/102/103, X=1 для Spine и X=2 для Leaf ).  
 - **Management-сеть** → `192.168.1.ID/24`.  
 
 
@@ -41,12 +42,14 @@
 | **WEST_LEAF103**  | `10.0.0.103/32`  | `/32`  | Underlay, будущий BGP Router-ID |
 
 #### **2.2. P2P-линки (Spine ↔ Leaf)**
-Используем **`/30`**  для экономии адресов (_Примечание: Nexus 9K в лабе не захотел работать с /31 P2P-линками Spine ↔ Leaf , в качестве  quick workaround используются /30_)   
-Формат: **`10.SpineID.LeafID.0/30`**, где
+Используем **`/30`**  для экономии адресов (_Примечание: Nexus 9K в лабе не захотел работать с /31 P2P-линками Spine ↔ Leaf , в качестве  quick workaround используются /30 адресация_)   
+Формат IP-адреса: **`10.SpineID.LeafID.0/30`**, где
    - Первый октет (`10`)  -принадлежность сети к RFC1918 диапазону 10.0.0.0/8
    - Второй октет (`201`) – идентификатор Spine.  
    - Третий октет (`101`) – идентификатор Leaf.  
    - Четвёртый октет (`.1` для Spine, `.2` для Leaf)
+
+Итоговая таблица P2P соединений:
 
 | Соединение (w/o DC Name)| Spine-адрес       | Leaf-адрес        | Подсеть            |
 |-------------------------|-------------------|-------------------|--------------------|
