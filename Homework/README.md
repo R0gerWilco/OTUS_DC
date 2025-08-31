@@ -1,7 +1,7 @@
 
 
 ### Домашние задания для курса Дизайн сетей ЦОД:
-#### Модуль 1 Архитектура сети
+#### [Модуль 1 Архитектура сети](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module1)
   ##### [Основы проектирования сети // ДЗ](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module1/Lesson03)
 #### Модуль 2 Построение
   #####  Построение Underlay сети(OSPF) // ДЗ
