@@ -1,4 +1,4 @@
-### Домашнее задания урока №3  Основы проектирования сети  модуля №1 Построение
+                                     ### Домашнее задание урока №3  Основы проектирования сети  модуля №1 Построение
 
 ##### Цель задания
 - Собрать схему CLOS согласно топологии из двух Spine коммутаторов, 3 Leaf коммутаторов и 4 клиентских РМ
@@ -9,10 +9,13 @@
 
  [<img src="CLOS_topology_example.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG)
 
+---
+
 
 ##### Топология сети лабораторной работы PnetLAB
 
  [<img src="WEST_DC_topology.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG)
+
 
 
 ##### Схема адресации для инфраструктуры выбрана согласно следующих входных данных:
