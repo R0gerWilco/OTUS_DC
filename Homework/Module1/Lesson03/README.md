@@ -7,7 +7,7 @@
 ##### Топология сети (пример)
 
 
-
+https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG
 
 
 ##### Топология сети лабораторной работы 
