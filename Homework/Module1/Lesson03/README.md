@@ -93,3 +93,12 @@ interface Ethernet1/6
   mtu 9216
 ```
 
+---
+
+#### **Проверка доступности LEAF коммутаторов с WEST_SPINE201**
+```bash
+show cdp ne
+
+```
+
+
