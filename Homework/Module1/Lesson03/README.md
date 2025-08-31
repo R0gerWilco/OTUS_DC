@@ -16,7 +16,7 @@
 
  [<img src="WEST_DC_topology.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG)
 
-
+---
 
 ### **2. Входные данные**:
 - Название ЦОД - WEST (для будущего multi-site дизайна)
@@ -25,14 +25,14 @@
 - ID коммутаторов должно стать часть IP-адресации Loopback и Underlay интерфейсов
 - ID Leaf должно стать частью имени клиентских рабочих мест (VPC в терминологии PnetLAB)
 
-
+---
 
 ### **3. Общая схема адресации**
 - **Loopback-адреса** → `10.0.0.ID/32` (где ID = номер коммутатора) 
 - **P2P-линки Spine ↔ Leaf** → `10.SpineID.LeafID.X/30` (SpineID = 201/202, LeafID = 101/102/103, X=1 для Spine и X=2 для Leaf ).  
 - **Management-сеть** → `192.168.1.ID/24`  (где ID = номер коммутатора)  
 
-
+---
 
 ### **4. Подробное раcпределение IP-адресов**
 #### **4.1. Loopback-адреса (для протоколов BGP/OSPF/IS-IS)**
@@ -74,7 +74,7 @@
 | **WEST_LEAF103**  | `192.168.1.103`  | `/24`  |
 
 ---
-#### **Пример конфигурации (WEST_SPINE201 ↔ WEST_LEAF101)**
+#### **5. Пример конфигурации (WEST_SPINE201 ↔ WEST_LEAF101)**
 **WEST_SPINE201:**
 ```bash
 interface Ethernet1/1
@@ -95,7 +95,7 @@ interface Ethernet1/6
 
 ---
 
-### **5. Проверка доступности LEAF коммутаторов с WEST_SPINE201**
+### **6. Проверка доступности LEAF коммутаторов с WEST_SPINE201**
 ```bash
 WEST_SPINE201# show cdp ne
 Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
@@ -115,7 +115,7 @@ Address         Age       MAC Address     Interface       Flags
 10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3  
 ```
 
-### **6. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
+### **7. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
 ```bash
 WEST_SPINE202# show cdp ne
 Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
