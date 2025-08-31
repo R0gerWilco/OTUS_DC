@@ -12,13 +12,13 @@
 
 ### Результаты ДЗ
 
-##### Топология сети лабораторной работы PnetLAB
+### **1. Топология сети лабораторной работы PnetLAB**:
 
  [<img src="WEST_DC_topology.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG)
 
 
 
-### **1. Входные данные**:
+### **2. Входные данные**:
 - Название ЦОД - WEST (для будущего multi-site дизайна)
 - 2 Spine коммутатора Nexus  с ID (номер) коммутаторов 201 и 202
 - 3 Leaf коммутатора Nexus  с ID коммутаторов 101, 102 и 103
@@ -27,15 +27,15 @@
 
 
 
-### **2. Общая схема адресации**
+### **3. Общая схема адресации**
 - **Loopback-адреса** → `10.0.0.ID/32` (где ID = номер коммутатора) 
 - **P2P-линки Spine ↔ Leaf** → `10.SpineID.LeafID.X/30` (SpineID = 201/202, LeafID = 101/102/103, X=1 для Spine и X=2 для Leaf ).  
 - **Management-сеть** → `192.168.1.ID/24`  (где ID = номер коммутатора)  
 
 
 
-### **3. Подробное раcпределение IP-адресов**
-#### **3.1. Loopback-адреса (для протоколов BGP/OSPF/IS-IS)**
+### **4. Подробное раcпределение IP-адресов**
+#### **4.1. Loopback-адреса (для протоколов BGP/OSPF/IS-IS)**
 | Устройство        | Loopback (IPv4)  | Маска  | Назначение |  
 |-------------------|------------------|--------|------------|
 | **WEST_SPINE201** | `10.0.0.201/32`  | `/32`  | Underlay   |
@@ -44,7 +44,7 @@
 | **WEST_LEAF102**  | `10.0.0.102/32`  | `/32`  | Underlay   |
 | **WEST_LEAF103**  | `10.0.0.103/32`  | `/32`  | Underlay   |
 
-#### **3.2. P2P-линки (Spine ↔ Leaf)**
+#### **4.2. P2P-линки (Spine ↔ Leaf)**
 Используем **`/30`**  для экономии адресов (_Примечание: Nexus 9K в лабе не захотел работать с /31 P2P-линками Spine ↔ Leaf , в качестве  quick workaround используются /30 адресация_)   
 Формат IP-адреса: **`10.SpineID.LeafID.0/30`**, где
    - Первый октет (`10`)  -принадлежность сети к RFC1918 диапазону 10.0.0.0/8
@@ -64,7 +64,7 @@
 | **Spine202 ↔ Leaf103**  | `10.202.103.1/30` | `10.202.103.2/30` | `10.202.103.0/30`  |
 
 
-#### **3.3. Management-сеть (Out-of-Band)**
+#### **4.3. Management-сеть (Out-of-Band)**
 | Устройство        | Management-адрес | Маска  |
 |-------------------|------------------|--------|
 | **WEST_SPINE201** | `192.168.1.201`  | `/24`  |
@@ -95,7 +95,7 @@ interface Ethernet1/6
 
 ---
 
-#### **Проверка доступности LEAF коммутаторов с WEST_SPINE201**
+### **5. Проверка доступности LEAF коммутаторов с WEST_SPINE201**
 ```bash
 WEST_SPINE201# show cdp ne
 Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
@@ -115,7 +115,7 @@ Address         Age       MAC Address     Interface       Flags
 10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3  
 ```
 
-#### **Проверка доступности LEAF коммутаторов с WEST_SPINE202**
+### **6. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
 ```bash
 WEST_SPINE202# show cdp ne
 Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
