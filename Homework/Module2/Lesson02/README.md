@@ -25,7 +25,7 @@
 
 
 ---
-#### **3. Типовая конфигурация OSPF на примере коммутатора WEST_LEAF101**
+### **3. Типовая конфигурация OSPF на примере коммутатора WEST_LEAF101**
 ```bash
 feature ospf
 
@@ -64,7 +64,7 @@ router ospf UNDERLAY
 
 ---
 
-### **6. Проверка таблицы маршрутизации на примере LEAF коммутатора WEST_LEAF101**
+### **4. Проверка таблицы маршрутизации на примере LEAF коммутатора WEST_LEAF101**
 ```bash
 WEST_LEAF101# show ip route ospf
 
@@ -88,23 +88,50 @@ WEST_LEAF101# show ip route ospf
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
 ```
 
-### **7. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
+### **5. Проверка доступности Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
 ```bash
-WEST_SPINE202# show cdp ne
-Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
-WEST_LEAF101(9L07512J2Q8)
-                    Eth1/1         141    R S s     N9K-9000v     Eth1/7        
-WEST_LEAF102(9I4LLD12KMX)
-                    Eth1/2         121    R S s     N9K-9000v     Eth1/7        
-WEST_LEAF103(9XEJ69W8IKX)
-                    Eth1/3         178    R S s     N9K-9000v     Eth1/7     
+WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0                  <-----------------------Loopback LEAF 102
+PING 10.0.0.102 (10.0.0.102): 56 data bytes
+64 bytes from 10.0.0.102: icmp_seq=0 ttl=253 time=18.869 ms
+64 bytes from 10.0.0.102: icmp_seq=1 ttl=253 time=17.004 ms
+64 bytes from 10.0.0.102: icmp_seq=2 ttl=253 time=11.81 ms
+64 bytes from 10.0.0.102: icmp_seq=3 ttl=253 time=8.608 ms
+64 bytes from 10.0.0.102: icmp_seq=4 ttl=253 time=16.892 ms
+--- 10.0.0.102 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 8.608/14.636/18.869 ms
 
-WEST_SPINE202# show ip arp
-IP ARP Table for context default
-Total number of entries: 3
-Address         Age       MAC Address     Interface       Flags
-10.202.101.2    00:09:10  5093.1500.e707  Ethernet1/1     
-10.202.102.2    00:09:10  5079.0600.f207  Ethernet1/2     
-10.202.103.2    00:08:57  5076.3c00.f707  Ethernet1/3    
+WEST_LEAF101# ping 10.0.0.103 source-interface Loopback0                   <-----------------------Loopback LEAF 103
+PING 10.0.0.103 (10.0.0.103): 56 data bytes
+64 bytes from 10.0.0.103: icmp_seq=0 ttl=253 time=74.995 ms
+64 bytes from 10.0.0.103: icmp_seq=1 ttl=253 time=30.342 ms
+64 bytes from 10.0.0.103: icmp_seq=2 ttl=253 time=17.605 ms
+64 bytes from 10.0.0.103: icmp_seq=3 ttl=253 time=15.329 ms
+64 bytes from 10.0.0.103: icmp_seq=4 ttl=253 time=33.473 ms
+--- 10.0.0.103 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 15.329/34.348/74.995 ms
+
+WEST_LEAF101# ping 10.0.0.201 source-interface Loopback0                   <-----------------------Loopback SPINE 201
+PING 10.0.0.201 (10.0.0.201): 56 data bytes
+64 bytes from 10.0.0.201: icmp_seq=0 ttl=254 time=9.268 ms
+64 bytes from 10.0.0.201: icmp_seq=1 ttl=254 time=15.892 ms
+64 bytes from 10.0.0.201: icmp_seq=2 ttl=254 time=5.289 ms
+64 bytes from 10.0.0.201: icmp_seq=3 ttl=254 time=12.943 ms
+64 bytes from 10.0.0.201: icmp_seq=4 ttl=254 time=6.483 ms
+--- 10.0.0.201 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 5.289/9.975/15.892 ms
+
+WEST_LEAF101# ping 10.0.0.202 source-interface Loopback0                   <-----------------------Loopback SPINE 202
+PING 10.0.0.202 (10.0.0.202): 56 data bytes
+64 bytes from 10.0.0.202: icmp_seq=0 ttl=254 time=11.667 ms
+64 bytes from 10.0.0.202: icmp_seq=1 ttl=254 time=10.754 ms
+64 bytes from 10.0.0.202: icmp_seq=2 ttl=254 time=11.429 ms
+64 bytes from 10.0.0.202: icmp_seq=3 ttl=254 time=9.959 ms
+64 bytes from 10.0.0.202: icmp_seq=4 ttl=254 time=29.177 ms
+--- 10.0.0.202 ping statistics ---
+5 packets transmitted, 5 packets received, 0.00% packet loss
+round-trip min/avg/max = 9.959/14.597/29.177 ms
 ```
 
