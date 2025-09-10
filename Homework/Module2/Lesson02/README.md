@@ -17,15 +17,15 @@
 ---
 
 ### **2. Входные данные**:
-- ID коммутаторов, IP-адресация сохранены с предыдущей топологии, списки IP-адресов указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md)  
+- ID коммутаторов, IP-адресация сохранены с предыдущей топологии, списки IP-адресов указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md, а также отображены на схеме сети 
 - Все интерфейсы (PtP, Loopback) используются в общей backbone Area 0.0.0.0 т.к. в текущем варианте лабной топологии (без multipod/multisite) нет острой необходимости деления OSPF домена на разные зоны 
-- IP-адрес интерфейса Loopback0 указан в качетсве OSPF Router-ID сооответствующего коммутатора
+- IP-адрес интерфейса Loopback0 указан в качестве OSPF Router-ID сооответствующего коммутатора
 - На PtP настроен протокол BFD с TX/RX = 100ms * multiplier 3
 - Значения таймеров OSPF оставлены по умолачнию: Hello 10, Dead 40, Wait 40, Retransmit 5
 
 
 ---
-#### **3. Пример конфигурации OSPF на коммутаторе WEST_LEAF101**
+#### **3. Типовая конфигурация OSPF на примере коммутатора WEST_LEAF101**
 ```bash
 feature ospf
 
