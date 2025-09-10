@@ -69,17 +69,17 @@ WEST_SPINE201# show ip os ne
  OSPF Process ID UNDERLAY VRF default
  Total number of neighbors: 3
  Neighbor ID     Pri State            Up Time  Address         Interface
- 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- LEAF 101   
- 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- LEAF 102
- 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- LEAF 103
+ 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- _LEAF 101_ 
+ 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- _LEAF 102_
+ 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- _LEAF 103_
 
 WEST_SPINE202# show ip os ne
  OSPF Process ID UNDERLAY VRF default
  Total number of neighbors: 3
  Neighbor ID     Pri State            Up Time  Address         Interface
- 10.0.0.101        1 FULL/ -          01:58:57 10.202.101.2    Eth1/1     <----------------------- LEAF 101
- 10.0.0.102        1 FULL/ -          01:58:56 10.202.102.2    Eth1/2     <----------------------- LEAF 102
- 10.0.0.103        1 FULL/ -          01:59:00 10.202.103.2    Eth1/3     <----------------------- LEAF 103
+ 10.0.0.101        1 FULL/ -          01:58:57 10.202.101.2    Eth1/1     <----------------------- _LEAF 101_
+ 10.0.0.102        1 FULL/ -          01:58:56 10.202.102.2    Eth1/2     <----------------------- _LEAF 102_
+ 10.0.0.103        1 FULL/ -          01:59:00 10.202.103.2    Eth1/3     <----------------------- _LEAF 103_
 ```
 
 ---
@@ -88,29 +88,29 @@ WEST_SPINE202# show ip os ne
 ```bash
 WEST_LEAF101# show ip route ospf
 
-10.0.0.102/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 102 via SPINE 201 & SPINE 202 
+10.0.0.102/32, ubest/mbest: 2/0                            <-----------------------_Loopback LEAF 102 via SPINE 201 & SPINE 202_
     *via 10.201.101.1, Eth1/6, [110/81], 01:38:18, ospf-UNDERLAY, intra
     *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
-10.0.0.103/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 103 via SPINE 201 & SPINE 202
+10.0.0.103/32, ubest/mbest: 2/0                            <-----------------------_Loopback LEAF 103 via SPINE 201 & SPINE 202_
     *via 10.201.101.1, Eth1/6, [110/81], 01:38:20, ospf-UNDERLAY, intra
     *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
-10.0.0.201/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 201 via SPINE 201
+10.0.0.201/32, ubest/mbest: 1/0                            <-----------------------_Loopback SPINE 201 via SPINE 201_
     *via 10.201.101.1, Eth1/6, [110/41], 01:38:22, ospf-UNDERLAY, intra
-10.0.0.202/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 202 via SPINE 202 
+10.0.0.202/32, ubest/mbest: 1/0                            <-----------------------_Loopback SPINE 202 via SPINE 202_ 
     *via 10.202.101.1, Eth1/7, [110/41], 01:38:14, ospf-UNDERLAY, intra
-10.201.102.0/30, ubest/mbest: 1/0                          <-----------------------PtP LEAF 102 - SPINE 201 via SPINE 201
+10.201.102.0/30, ubest/mbest: 1/0                          <-----------------------_PtP LEAF 102 - SPINE 201 via SPINE 201_
     *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
-10.201.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103 - SPINE 201 via SPINE 201
+10.201.103.0/30, ubest/mbest: 1/0                           <-----------------------_PtP LEAF 103 - SPINE 201 via SPINE 201_
     *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
-10.202.102.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 102 - SPINE 202 via SPINE 202
+10.202.102.0/30, ubest/mbest: 1/0                           <-----------------------_PtP LEAF 102 - SPINE 202 via SPINE 202_
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
-10.202.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103 - SPINE 202 via SPINE 202
+10.202.103.0/30, ubest/mbest: 1/0                           <-----------------------_PtP LEAF 103 - SPINE 202 via SPINE 202_
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
 ```
 
 ### **6. Проверка доступности Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
 ```bash
-WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0                  <-----------------------Loopback LEAF 102
+WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0                  <-----------------------_Loopback LEAF 102_
 PING 10.0.0.102 (10.0.0.102): 56 data bytes
 64 bytes from 10.0.0.102: icmp_seq=0 ttl=253 time=18.869 ms
 64 bytes from 10.0.0.102: icmp_seq=1 ttl=253 time=17.004 ms
@@ -121,7 +121,7 @@ PING 10.0.0.102 (10.0.0.102): 56 data bytes
 5 packets transmitted, 5 packets received, 0.00% packet loss
 round-trip min/avg/max = 8.608/14.636/18.869 ms
 
-WEST_LEAF101# ping 10.0.0.103 source-interface Loopback0                   <-----------------------Loopback LEAF 103
+WEST_LEAF101# ping 10.0.0.103 source-interface Loopback0                   <-----------------------_Loopback LEAF 103_
 PING 10.0.0.103 (10.0.0.103): 56 data bytes
 64 bytes from 10.0.0.103: icmp_seq=0 ttl=253 time=74.995 ms
 64 bytes from 10.0.0.103: icmp_seq=1 ttl=253 time=30.342 ms
@@ -132,7 +132,7 @@ PING 10.0.0.103 (10.0.0.103): 56 data bytes
 5 packets transmitted, 5 packets received, 0.00% packet loss
 round-trip min/avg/max = 15.329/34.348/74.995 ms
 
-WEST_LEAF101# ping 10.0.0.201 source-interface Loopback0                   <-----------------------Loopback SPINE 201
+WEST_LEAF101# ping 10.0.0.201 source-interface Loopback0                   <-----------------------_Loopback SPINE 201_
 PING 10.0.0.201 (10.0.0.201): 56 data bytes
 64 bytes from 10.0.0.201: icmp_seq=0 ttl=254 time=9.268 ms
 64 bytes from 10.0.0.201: icmp_seq=1 ttl=254 time=15.892 ms
@@ -143,7 +143,7 @@ PING 10.0.0.201 (10.0.0.201): 56 data bytes
 5 packets transmitted, 5 packets received, 0.00% packet loss
 round-trip min/avg/max = 5.289/9.975/15.892 ms
 
-WEST_LEAF101# ping 10.0.0.202 source-interface Loopback0                   <-----------------------Loopback SPINE 202
+WEST_LEAF101# ping 10.0.0.202 source-interface Loopback0                   <-----------------------_Loopback SPINE 202_
 PING 10.0.0.202 (10.0.0.202): 56 data bytes
 64 bytes from 10.0.0.202: icmp_seq=0 ttl=254 time=11.667 ms
 64 bytes from 10.0.0.202: icmp_seq=1 ttl=254 time=10.754 ms
