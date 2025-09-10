@@ -17,78 +17,49 @@
 ---
 
 ### **2. Входные данные**:
-- Название ЦОД - WEST (для будущего multi-site дизайна)
-- 2 Spine коммутатора Nexus  с ID (номер) коммутаторов 201 и 202
-- 3 Leaf коммутатора Nexus  с ID коммутаторов 101, 102 и 103
-- ID коммутаторов должно стать часть IP-адресации Loopback и Underlay интерфейсов
-- ID Leaf должно стать частью имени клиентских рабочих мест (VPC в терминологии PnetLAB)
+- ID коммутаторов, IP-адресация сохранены с предыдущей топологии, списки IP-адресов указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md)  
+- Все интерфейсы (PtP, Loopback) используются в общей backbone Area 0.0.0.0 т.к. в текущем варианте лабной топологии (без multipod/multisite) нет острой необходимости деления OSPF домена на разные зоны 
+- IP-адрес интерфейса Loopback0 указан в качетсве OSPF Router-ID сооответствующего коммутатора
+- На PtP настроен протокол BFD с TX/RX = 100ms * multiplier 3
+- Значения таймеров OSPF оставлены по умолачнию: Hello 10, Dead 40, Wait 40, Retransmit 5
+
 
 ---
-
-### **3. Общая схема адресации**
-- **Loopback-адреса** → `10.0.0.ID/32` (где ID = номер коммутатора) 
-- **P2P-линки Spine ↔ Leaf** → `10.SpineID.LeafID.X/30` (SpineID = 201/202, LeafID = 101/102/103, X=1 для Spine и X=2 для Leaf ).  
-- **Management-сеть** → `192.168.1.ID/24`  (где ID = номер коммутатора)  
-
----
-
-### **4. Подробное раcпределение IP-адресов**
-#### **4.1. Loopback-адреса (для протоколов BGP/OSPF/IS-IS)**
-| Устройство        | Loopback (IPv4)  | Маска  | Назначение |  
-|-------------------|------------------|--------|------------|
-| **WEST_SPINE201** | `10.0.0.201/32`  | `/32`  | Underlay   |
-| **WEST_SPINE202** | `10.0.0.202/32`  | `/32`  | Underlay   |
-| **WEST_LEAF101**  | `10.0.0.101/32`  | `/32`  | Underlay   |
-| **WEST_LEAF102**  | `10.0.0.102/32`  | `/32`  | Underlay   |
-| **WEST_LEAF103**  | `10.0.0.103/32`  | `/32`  | Underlay   |
-
-#### **4.2. P2P-линки (Spine ↔ Leaf)**
-Используем **`/30`**  для экономии адресов (_Примечание: Nexus 9K в лабе не захотел работать с /31 P2P-линками Spine ↔ Leaf , в качестве  quick workaround используется /30 адресация_)   
-Формат IP-адреса: **`10.SpineID.LeafID.0/30`**, где
-   - Первый октет (`10`)  -принадлежность сети к RFC1918 диапазону 10.0.0.0/8
-   - Второй октет (`e.g. 201`) – идентификатор Spine.  
-   - Третий октет (`e.g. 101`) – идентификатор Leaf.  
-   - Четвёртый октет (`.1` для Spine, `.2` для Leaf)
-
-**Итоговая таблица P2P соединений:**
-
-| Соединение (w/o DC Name)| Spine-адрес       | Leaf-адрес        | Подсеть            |
-|-------------------------|-------------------|-------------------|--------------------|
-| **Spine201 ↔ Leaf101**  | `10.201.101.1/30` | `10.201.101.2/30` | `10.201.101.0/30`  |
-| **Spine201 ↔ Leaf102**  | `10.201.102.1/30` | `10.201.102.2/30` | `10.201.102.0/30`  |
-| **Spine201 ↔ Leaf103**  | `10.201.103.1/30` | `10.201.103.2/30` | `10.201.103.0/30`  |
-| **Spine202 ↔ Leaf101**  | `10.202.101.1/30` | `10.202.101.2/30` | `10.202.101.0/30`  |
-| **Spine202 ↔ Leaf102**  | `10.202.102.1/30` | `10.202.102.2/30` | `10.202.102.0/30`  |
-| **Spine202 ↔ Leaf103**  | `10.202.103.1/30` | `10.202.103.2/30` | `10.202.103.0/30`  |
-
-
-#### **4.3. Management-сеть (Out-of-Band)**
-| Устройство        | Management-адрес | Маска  |
-|-------------------|------------------|--------|
-| **WEST_SPINE201** | `192.168.1.201`  | `/24`  |
-| **WEST_SPINE202** | `192.168.1.202`  | `/24`  |
-| **WEST_LEAF101**  | `192.168.1.101`  | `/24`  |
-| **WEST_LEAF102**  | `192.168.1.102`  | `/24`  |
-| **WEST_LEAF103**  | `192.168.1.103`  | `/24`  |
-
----
-#### **5. Пример конфигурации (WEST_SPINE201 ↔ WEST_LEAF101)**
-**WEST_SPINE201:**
+#### **3. Пример конфигурации OSPF на коммутаторе WEST_LEAF101**
 ```bash
-interface Ethernet1/1
-  description TO_LEAF101
-  no switchport
-  ip address 10.201.101.1/30
-  mtu 9216
-```
+feature ospf
 
-**WEST_LEAF101:**
-```bash
-interface Ethernet1/6
+  interface Ethernet1/6
   description TO_SPINE201
   no switchport
-  ip address 10.201.101.2/30
   mtu 9216
+  bfd ipv4 interval 100 min_rx 100 multiplier 3
+  ip address 10.201.101.2/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf UNDERLAY area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/7
+  description TO_SPINE202
+  no switchport
+  mtu 9216
+  bfd ipv4 interval 100 min_rx 100 multiplier 3
+  ip address 10.202.101.2/30
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf UNDERLAY area 0.0.0.0
+  no shutdown
+
+interface loopback0
+  description LoopBack_LEAF101
+  ip address 10.0.0.101/32
+  ip router ospf UNDERLAY area 0.0.0.0
+
+router ospf UNDERLAY
+  bfd
+  router-id 10.0.0.101
+  passive-interface default
 ```
 
 ---
