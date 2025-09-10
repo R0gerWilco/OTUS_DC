@@ -64,24 +64,28 @@ router ospf UNDERLAY
 
 ---
 
-### **6. Проверка доступности LEAF коммутаторов с WEST_SPINE201**
+### **6. Проверка таблицы маршрутизации на примере LEAF коммутатора WEST_LEAF101**
 ```bash
-WEST_SPINE201# show cdp ne
-Device-ID          Local Intrfce  Hldtme Capability  Platform      Port ID
-WEST_LEAF101(9L07512J2Q8)
-                    Eth1/1         124    R S s     N9K-9000v     Eth1/6        
-WEST_LEAF102(9I4LLD12KMX)
-                    Eth1/2         127    R S s     N9K-9000v     Eth1/6        
-WEST_LEAF103(9XEJ69W8IKX)
-                    Eth1/3         167    R S s     N9K-9000v     Eth1/6        
+WEST_LEAF101# show ip route ospf
 
-WEST_SPINE201# show ip arp
-IP ARP Table for context default
-Total number of entries: 3
-Address         Age       MAC Address     Interface       Flags
-10.201.101.2    00:02:27  5093.1500.e707  Ethernet1/1     
-10.201.102.2    00:10:37  5079.0600.f207  Ethernet1/2     
-10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3  
+10.0.0.102/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 102
+    *via 10.201.101.1, Eth1/6, [110/81], 01:38:18, ospf-UNDERLAY, intra
+    *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
+10.0.0.103/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 103
+    *via 10.201.101.1, Eth1/6, [110/81], 01:38:20, ospf-UNDERLAY, intra
+    *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
+10.0.0.201/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 201
+    *via 10.201.101.1, Eth1/6, [110/41], 01:38:22, ospf-UNDERLAY, intra
+10.0.0.202/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 202
+    *via 10.202.101.1, Eth1/7, [110/41], 01:38:14, ospf-UNDERLAY, intra
+10.201.102.0/30, ubest/mbest: 1/0                          <-----------------------PtP LEAF 102  - SPINE 201
+    *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
+10.201.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103  - SPINE 201
+    *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
+10.202.102.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 102  - SPINE 202
+    *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
+10.202.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103  - SPINE 202
+    *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
 ```
 
 ### **7. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
