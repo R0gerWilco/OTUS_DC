@@ -61,10 +61,30 @@ router ospf UNDERLAY
   router-id 10.0.0.101
   passive-interface default
 ```
+---
+
+### **4. Проверка таблицы OSPF соседства на SPINE коммутаторах**
+```bash
+WEST_SPINE201# show ip os ne
+ OSPF Process ID UNDERLAY VRF default
+ Total number of neighbors: 3
+ Neighbor ID     Pri State            Up Time  Address         Interface
+ 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- LEAF 101   
+ 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- LEAF 102
+ 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- LEAF 103
+
+WEST_SPINE202# show ip os ne
+ OSPF Process ID UNDERLAY VRF default
+ Total number of neighbors: 3
+ Neighbor ID     Pri State            Up Time  Address         Interface
+ 10.0.0.101        1 FULL/ -          01:58:57 10.202.101.2    Eth1/1     <----------------------- LEAF 101
+ 10.0.0.102        1 FULL/ -          01:58:56 10.202.102.2    Eth1/2     <----------------------- LEAF 102
+ 10.0.0.103        1 FULL/ -          01:59:00 10.202.103.2    Eth1/3     <----------------------- LEAF 103
+```
 
 ---
 
-### **4. Проверка таблицы маршрутизации на примере LEAF коммутатора WEST_LEAF101**
+### **5. Проверка таблицы маршрутизации на примере LEAF коммутатора WEST_LEAF101**
 ```bash
 WEST_LEAF101# show ip route ospf
 
@@ -88,7 +108,7 @@ WEST_LEAF101# show ip route ospf
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
 ```
 
-### **5. Проверка доступности Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
+### **6. Проверка доступности Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
 ```bash
 WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0                  <-----------------------Loopback LEAF 102
 PING 10.0.0.102 (10.0.0.102): 56 data bytes
