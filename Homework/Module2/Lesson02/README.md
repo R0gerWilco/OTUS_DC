@@ -69,9 +69,9 @@ WEST_SPINE201# show ip os ne
  OSPF Process ID UNDERLAY VRF default
  Total number of neighbors: 3
  Neighbor ID     Pri State            Up Time  Address         Interface
- 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- _LEAF 101_ 
- 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- _LEAF 102_
- 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- _LEAF 103_
+ 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- LEAF 101
+ 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- LEAF 102
+ 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- LEAF 103
 
 WEST_SPINE202# show ip os ne
  OSPF Process ID UNDERLAY VRF default
