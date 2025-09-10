@@ -6,10 +6,6 @@
      - Убедиться в наличии IP связанности между устройствами в OSFP домене
 
 
-##### Топология сети (пример)
-
- [<img src="CLOS_topology_example.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/CLOS_topology_example.JPG)
-
 ---
 
 ### Результаты ДЗ
