@@ -68,23 +68,23 @@ router ospf UNDERLAY
 ```bash
 WEST_LEAF101# show ip route ospf
 
-10.0.0.102/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 102
+10.0.0.102/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 102 via SPINE 201 & SPINE 202 
     *via 10.201.101.1, Eth1/6, [110/81], 01:38:18, ospf-UNDERLAY, intra
     *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
-10.0.0.103/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 103
+10.0.0.103/32, ubest/mbest: 2/0                            <-----------------------Loopback LEAF 103 via SPINE 201 & SPINE 202
     *via 10.201.101.1, Eth1/6, [110/81], 01:38:20, ospf-UNDERLAY, intra
     *via 10.202.101.1, Eth1/7, [110/81], 01:38:14, ospf-UNDERLAY, intra
-10.0.0.201/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 201
+10.0.0.201/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 201 via SPINE 201
     *via 10.201.101.1, Eth1/6, [110/41], 01:38:22, ospf-UNDERLAY, intra
-10.0.0.202/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 202
+10.0.0.202/32, ubest/mbest: 1/0                            <-----------------------Loopback SPINE 202 via SPINE 202 
     *via 10.202.101.1, Eth1/7, [110/41], 01:38:14, ospf-UNDERLAY, intra
-10.201.102.0/30, ubest/mbest: 1/0                          <-----------------------PtP LEAF 102  - SPINE 201
+10.201.102.0/30, ubest/mbest: 1/0                          <-----------------------PtP LEAF 102 - SPINE 201 via SPINE 201
     *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
-10.201.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103  - SPINE 201
+10.201.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103 - SPINE 201 via SPINE 201
     *via 10.201.101.1, Eth1/6, [110/80], 01:38:22, ospf-UNDERLAY, intra
-10.202.102.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 102  - SPINE 202
+10.202.102.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 102 - SPINE 202 via SPINE 202
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
-10.202.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103  - SPINE 202
+10.202.103.0/30, ubest/mbest: 1/0                           <-----------------------PtP LEAF 103 - SPINE 202 via SPINE 202
     *via 10.202.101.1, Eth1/7, [110/80], 01:38:14, ospf-UNDERLAY, intra
 ```
 
