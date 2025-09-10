@@ -12,7 +12,7 @@
 
 ### **1. Топология сети лабораторной работы в PnetLAB**:
 
- [<img src="WEST_DC_topology.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/WEST_DC_topology.JPG)
+ [<img src="WEST_DC_topology_for_OSPF.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson02/WEST_DC_topology_for_OSPF.JPG)
 
 ---
 
