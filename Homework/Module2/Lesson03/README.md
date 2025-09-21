@@ -12,12 +12,12 @@
 
 ### **1. Топология сети IPv4 лабораторной работы в PnetLAB**:
 
- [<img src="WEST_DC_topology_for_OSPF_1.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson02/WEST_DC_topology_for_OSPF_1.JPG)
+ [<img src="WEST_DC_topology_for_ISIS.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson03/WEST_DC_topology_for_ISIS.JPG)
 
 
 ### **3. Топология сети IPv6 лабораторной работы в PnetLAB**:
 
- [<img src="WEST_DC_topology_for_OSPF_1.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson02/WEST_DC_topology_for_OSPF_1.JPG)
+ [<img src="WEST_DC_topology_for_ISIS_IPv6 .JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson03/WEST_DC_topology_for_ISIS_IPv6.JPG)
 
 
 
