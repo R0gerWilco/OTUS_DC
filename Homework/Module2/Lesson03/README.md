@@ -15,7 +15,7 @@
  [<img src="WEST_DC_topology_for_ISIS.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson03/WEST_DC_topology_for_ISIS.JPG)
 
 
-### **3. Топология сети IPv6 лабораторной работы в PnetLAB**:
+### **2. Топология сети IPv6 лабораторной работы в PnetLAB**:
 
  [<img src="WEST_DC_topology_for_ISIS_IPv6.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson03/WEST_DC_topology_for_ISIS_IPv6.JPG)
 
@@ -23,12 +23,21 @@
 
 ---
 
-### **2. Входные данные**:
+### **3. Входные данные**:
+
+#### **3.1 Общая информация**
 - ID коммутаторов, IPv4-адресация сохранены с предыдущей топологии, списки IP-адресов указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети 
--
 - Общая Area 49.001
 - Отношения соседства ISIS на PtP линках указаны как Level2
 
+#### **3.2. Loopback- IPv6 адресация **
+| Устройство        | Loopback (IPv6)  | Маска  |  
+|-------------------|------------------|--------|
+| **WEST_SPINE201** | `10::201`        | `/128` | 
+| **WEST_SPINE202** | `10::202`        | `/128` | 
+| **WEST_LEAF101**  | `10::101`        | `/128` | 
+| **WEST_LEAF102**  | `10::102`        | `/128` | 
+| **WEST_LEAF103**  | `10::103`        | `/128` | 
 
 
 ---
