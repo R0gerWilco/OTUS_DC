@@ -209,12 +209,6 @@ WEST_LEAF103    N/A             2      UP     00:00:28   Ethernet1/3        <---
 ```bash
 
 WEST_LEAF101# show ip route isis-UNDERLAY
-IP Route Table for VRF "default"
-'*' denotes best ucast next-hop
-'**' denotes best mcast next-hop
-'[x/y]' denotes [preference/metric]
-'%<string>' in via output denotes VRF <string>
-
 10.0.0.102/32, ubest/mbest: 2/0                                        <-----------------------Loopback LEAF 102 via SPINE 201 & SPINE 202
     *via 10.201.101.1, Eth1/6, [115/81], 00:07:12, isis-UNDERLAY, L2
     *via 10.202.101.1, Eth1/7, [115/81], 00:07:19, isis-UNDERLAY, L2
@@ -300,7 +294,7 @@ IPv6 Routing Table for VRF "default"
 10:201:102::2/127, ubest/mbest: 2/0                                                <-----------------------Eth1/6 LEAF 102 на PtP линке LEAF 102 - SPINE 201  via SPINE 201 & SPINE 202
     *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
     *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/120], 00:22:26, isis-UNDERLAY, L2
-10:201:103::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/2 SPINE 201 на PtP линке LEAF 103 - SPINE 201  via SPINE 201
+10:201:103::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/3 SPINE 201 на PtP линке LEAF 103 - SPINE 201  via SPINE 201
     *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/80], 00:22:19, isis-UNDERLAY, L2
 10:201:103::2/127, ubest/mbest: 2/0                                                <-----------------------Eth1/6 LEAF 103 на PtP линке LEAF 103 - SPINE 201  via SPINE 201 & SPINE 202
     *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
