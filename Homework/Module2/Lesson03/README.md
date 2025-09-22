@@ -27,7 +27,7 @@
 
 #### **3.1. Общая информация**
 
-- Общая Area 49.001
+- Общая Area ID 49.001, SysID часть NET адреса в последних двух байтах содержит ID коммутатора
 - Отношения соседства ISIS на PtP линках указаны как Level2
 - Используется аутентификация с применением хеширования MD5 на PtP линках
 - IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4
@@ -273,3 +273,87 @@ PING 10.0.0.202 (10.0.0.202): 56 data bytes
 3 packets transmitted, 3 packets received, 0.00% packet loss
 round-trip min/avg/max = 36.276/54.845/88.83 ms
 ```
+
+
+### **9. Проверка таблицы маршрутизации IPv6 на примере LEAF коммутатора WEST_LEAF101**
+```bash
+WEST_LEAF101# show ipv6 route isis-UNDERLAY 
+IPv6 Routing Table for VRF "default"
+'*' denotes best ucast next-hop
+'**' denotes best mcast next-hop
+'[x/y]' denotes [preference/metric]
+
+10::102/128, ubest/mbest: 2/0                                                       <-----------------------Loopback LEAF 102 via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/81], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/81], 00:22:26, isis-UNDERLAY, L2
+10::103/128, ubest/mbest: 2/0                                                       <-----------------------Loopback LEAF 103 via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/81], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/81], 00:22:10, isis-UNDERLAY, L2
+10::201/128, ubest/mbest: 1/0                                                       <-----------------------Loopback SPINE 201 via SPINE 201                                      
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/41], 00:22:19, isis-UNDERLAY, L2
+10::202/128, ubest/mbest: 1/0                                                       <-----------------------Loopback SPINE 202 via SPINE 202
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/41], 00:22:27, isis-UNDERLAY, L2
+10:201:101::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/1 SPINE 201 на PtP линке LEAF 101 - SPINE 201  via SPINE 201
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/80], 00:22:19, isis-UNDERLAY, L2
+10:201:102::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/2 SPINE 201 на PtP линке LEAF 102 - SPINE 201  via SPINE 201
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/80], 00:22:19, isis-UNDERLAY, L2
+10:201:102::2/127, ubest/mbest: 2/0                                                <-----------------------Eth1/6 LEAF 102 на PtP линке LEAF 102 - SPINE 201  via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/120], 00:22:26, isis-UNDERLAY, L2
+10:201:103::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/2 SPINE 201 на PtP линке LEAF 103 - SPINE 201  via SPINE 201
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/80], 00:22:19, isis-UNDERLAY, L2
+10:201:103::2/127, ubest/mbest: 2/0                                                <-----------------------Eth1/6 LEAF 103 на PtP линке LEAF 103 - SPINE 201  via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/120], 00:22:10, isis-UNDERLAY, L2
+10:202:101::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/1 SPINE 202 на PtP линке LEAF 101 - SPINE 202  via SPINE 202
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/80], 00:22:27, isis-UNDERLAY, L2
+10:202:102::/127, ubest/mbest: 1/0                                                 <-----------------------Eth1/2 SPINE 202 на PtP линке LEAF 102 - SPINE 202  via SPINE 202
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/80], 00:22:26, isis-UNDERLAY, L2
+10:202:102::2/127, ubest/mbest: 2/0                                                 <-----------------------Eth1/7 LEAF 102 на PtP линке LEAF 102 - SPINE 202  via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/120], 00:22:26, isis-UNDERLAY, L2
+10:202:103::/127, ubest/mbest: 1/0                                                  <-----------------------Eth1/3 SPINE 202 на PtP линке LEAF 103 - SPINE 202  via SPINE 202
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/80], 00:22:27, isis-UNDERLAY, L2
+10:202:103::2/127, ubest/mbest: 2/0                                                 <-----------------------Eth1/7 LEAF 103 на PtP линке LEAF 103 - SPINE 202  via SPINE 201 & SPINE 202
+    *via fe80::523f:5fff:fe00:d507, Eth1/6, [115/120], 00:22:19, isis-UNDERLAY, L2
+    *via fe80::5259:e1ff:fe00:d907, Eth1/7, [115/120], 00:22:10, isis-UNDERLAY, L2
+```
+
+### **10. Проверка доступности  IPv6 Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
+```bash
+WEST_LEAF101# ping6 10::102 source-interface Loo0 cou 3                          <-----------------------Loopback LEAF 102
+PING6 10::102 (10::102): 56 data bytes
+64 bytes from 10::102: icmp_seq=0 time=60.158 ms
+64 bytes from 10::102: icmp_seq=1 time=128.588 ms
+64 bytes from 10::102: icmp_seq=2 time=63.772 ms
+--- 10::102 ping6 statistics ---
+3 packets transmitted, 3 packets received, 0.00% packet loss
+round-trip min/avg/max = 60.158/84.172/128.588 ms
+
+WEST_LEAF101# ping6 10::103 source-interface Loo0 cou 3                          <-----------------------Loopback LEAF 103
+PING6 10::103 (10::103): 56 data bytes
+64 bytes from 10::103: icmp_seq=0 time=64.026 ms
+64 bytes from 10::103: icmp_seq=1 time=45.314 ms
+64 bytes from 10::103: icmp_seq=2 time=27.411 ms
+--- 10::103 ping6 statistics ---
+3 packets transmitted, 3 packets received, 0.00% packet loss
+round-trip min/avg/max = 27.411/45.583/64.026 ms
+
+WEST_LEAF101# ping6 10::201 source-interface Loo0 cou 3                           <-----------------------Loopback SPINE 201
+PING6 10::201 (10::201): 56 data bytes
+64 bytes from 10::201: icmp_seq=0 time=34.659 ms
+64 bytes from 10::201: icmp_seq=1 time=42.709 ms
+64 bytes from 10::201: icmp_seq=2 time=31.521 ms
+--- 10::201 ping6 statistics ---
+3 packets transmitted, 3 packets received, 0.00% packet loss
+round-trip min/avg/max = 31.521/36.296/42.709 ms
+
+WEST_LEAF101# ping6 10::202 source-interface Loo0 cou 3                           <-----------------------Loopback SPINE 202
+PING6 10::202 (10::202): 56 data bytes
+64 bytes from 10::202: icmp_seq=0 time=19.886 ms
+64 bytes from 10::202: icmp_seq=1 time=15.171 ms
+64 bytes from 10::202: icmp_seq=2 time=35.727 ms
+--- 10::202 ping6 statistics ---
+3 packets transmitted, 3 packets received, 0.00% packet loss
+round-trip min/avg/max = 15.171/23.594/35.727 ms
+
