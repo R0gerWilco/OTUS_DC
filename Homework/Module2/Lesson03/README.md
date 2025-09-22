@@ -83,7 +83,6 @@ router isis UNDERLAY
   isis network point-to-point
   isis circuit-type level-2
   isis authentication-type md5
-  isis authentication-type md5 level-2
   isis authentication key-chain ISISKey
   ip router isis UNDERLAY
   ipv6 router isis UNDERLAY
@@ -101,7 +100,6 @@ interface Ethernet1/7
   isis network point-to-point
   isis circuit-type level-2
   isis authentication-type md5
-  isis authentication-type md5 level-2
   isis authentication key-chain ISISKey
   ip router isis UNDERLAY
   ipv6 router isis UNDERLAY
