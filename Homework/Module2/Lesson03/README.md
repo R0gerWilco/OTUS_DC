@@ -26,10 +26,12 @@
 ### **3. Входные данные**:
 
 #### **3.1. Общая информация**
-- ID коммутаторов, IPv4-адресация сохранены с предыдущей топологии, списки IP-адресов указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4
+
 - Общая Area 49.001
 - Отношения соседства ISIS на PtP линках указаны как Level2
-- IPv6-адресация указаны в таблицах ниже, а также отображены на схеме сети  IPv6
+- Используется аутентификация с применением хеширования MD5 на PtP линках
+- IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4
+- IPv6-адреса коммутаторов и PtP линков указаны в таблицах ниже, а также отображены на схеме сети  IPv6
 
 #### **3.2. Таблица Loopback в IPv6**
 | Устройство        | Loopback (IPv6)  | 
@@ -62,55 +64,141 @@ feature isis
   interface Ethernet1/6
   description TO_SPINE201
   no switchport
-  mtu 9216
-  bfd ipv4 interval 100 min_rx 100 multiplier 3
+  no ip redirects
   ip address 10.201.101.2/30
-  ip ospf network point-to-point
-  no ip ospf passive-interface
-  ip router ospf UNDERLAY area 0.0.0.0
+  ip verify unicast source reachable-via rx
+  ipv6 address 10:201:101::2/127
+  no ipv6 redirects
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication-type md5 level-2
+  isis authentication key-chain ISISKey
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
   no shutdown
 
 interface Ethernet1/7
   description TO_SPINE202
   no switchport
-  mtu 9216
-  bfd ipv4 interval 100 min_rx 100 multiplier 3
+  no ip redirects
   ip address 10.202.101.2/30
-  ip ospf network point-to-point
-  no ip ospf passive-interface
-  ip router ospf UNDERLAY area 0.0.0.0
+  ip verify unicast source reachable-via rx
+  ipv6 address 10:202:101::2/127
+  no ipv6 redirects
+  isis network point-to-point
+  isis circuit-type level-2
+  isis authentication-type md5
+  isis authentication-type md5 level-2
+  isis authentication key-chain ISISKey
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
+  no isis passive-interface level-2
   no shutdown
 
-interface loopback0
+nterface loopback0
   description LoopBack_LEAF101
   ip address 10.0.0.101/32
-  ip router ospf UNDERLAY area 0.0.0.0
+  ipv6 address 10::101/128
+  ip router isis UNDERLAY
+  ipv6 router isis UNDERLAY
 
-router ospf UNDERLAY
-  bfd
-  router-id 10.0.0.101
-  passive-interface default
+router isis UNDERLAY
+  net 49.0001.0000.0000.0101.00
+  is-type level-2
+  address-family ipv4 unicast
+  address-family ipv6 unicast
 ```
+
+### **5. Типичное состояние процесса ISIS на примере коммутатора WEST_LEAF101**
+```bash
+WEST_LEAF101# show isis UNDERLAY 
+ISIS process : UNDERLAY
+ Instance number :  1
+ UUID: 1090519320
+ Process ID 14477
+VRF: default
+  System ID : 0000.0000.0101  IS-Type : L2
+  SAP : 412  Queue Handle : 13
+  Maximum LSP MTU: 1492
+  Stateful HA enabled
+  Graceful Restart enabled. State: Inactive 
+  Last graceful restart status : none
+  Start-Mode Complete
+  BFD IPv4 is globally disabled for ISIS process: UNDERLAY
+  BFD IPv6 is globally disabled for ISIS process: UNDERLAY
+  Topology-mode is base
+  Metric-style : advertise(wide), accept(narrow, wide)
+  Area address(es) :
+    49.0001
+  Process is up and running
+  VRF ID: 1
+  Stale routes during non-graceful controlled restart
+  Enable resolution of L3->L2 address for ISIS adjacency
+  SRTE: Not registered
+  OAM: Not registered
+  SR IPv4 is not configured and disabled for ISIS process: UNDERLAY
+  SR IPv6 is not configured and disabled for ISIS process: UNDERLAY
+SRv6 feature not present
+  Interfaces supported by IS-IS :
+    loopback0
+    Ethernet1/6
+    Ethernet1/7
+  Topology : 0
+  Address family IPv4 unicast :
+    Number of interface : 3
+    Distance : 115
+    Default-information not originated
+  Address family IPv6 unicast :
+    Number of interface : 3
+    Distance : 115
+    Default-information not originated
+  Topology : 2
+  Address family IPv4 unicast :
+    Number of interface : 0
+    Distance : 115
+    Default-information not originated
+  Address family IPv6 unicast :
+    Number of interface : 0
+    Distance : 115
+    Default-information not originated
+  Level1
+  No auth type and keychain
+  Auth check set
+  Level2
+  No auth type and keychain
+  Auth check set
+  L1 Next SPF: Inactive
+  L2 Next SPF: Inactive
+  Attached bits
+   MT-0 L-1: Att 0 Spf-att 0 Cfg 1 Adv-att 0
+   MT-0 L-2: Att 0 Spf-att 0 Cfg 1 Adv-att 0
+```
+
 ---
 
-### **4. Проверка таблицы OSPF соседства на SPINE коммутаторах**
+### **6. Проверка таблицы ISIS соседства на SPINE коммутаторах**
 ```bash
-WEST_SPINE201# show ip os ne
- OSPF Process ID UNDERLAY VRF default
- Total number of neighbors: 3
- Neighbor ID     Pri State            Up Time  Address         Interface
- 10.0.0.101        1 FULL/ -          00:03:21 10.201.101.2    Eth1/1     <----------------------- LEAF 101
- 10.0.0.102        1 FULL/ -          01:58:43 10.201.102.2    Eth1/2     <----------------------- LEAF 102
- 10.0.0.103        1 FULL/ -          01:58:43 10.201.103.2    Eth1/3     <----------------------- LEAF 103
+WEST_SPINE201# show isis adjacency 
+IS-IS process: UNDERLAY VRF: default
+IS-IS adjacency database:
+Legend: '!': No AF level connectivity in given topology
+System ID       SNPA            Level  State  Hold Time  Interface
+WEST_LEAF101    N/A             2      UP     00:00:26   Ethernet1/1       <----------------------- LEAF 101
+WEST_LEAF102    N/A             2      UP     00:00:30   Ethernet1/2       <----------------------- LEAF 102
+WEST_LEAF103    N/A             2      UP     00:00:26   Ethernet1/3       <----------------------- LEAF 103
 
-WEST_SPINE202# show ip os ne
- OSPF Process ID UNDERLAY VRF default
- Total number of neighbors: 3
- Neighbor ID     Pri State            Up Time  Address         Interface
- 10.0.0.101        1 FULL/ -          01:58:57 10.202.101.2    Eth1/1     <----------------------- LEAF 101
- 10.0.0.102        1 FULL/ -          01:58:56 10.202.102.2    Eth1/2     <----------------------- LEAF 102
- 10.0.0.103        1 FULL/ -          01:59:00 10.202.103.2    Eth1/3     <----------------------- LEAF 103
+WEST_SPINE202# show isis adjacency 
+IS-IS process: UNDERLAY VRF: default
+IS-IS adjacency database:
+Legend: '!': No AF level connectivity in given topology
+System ID       SNPA            Level  State  Hold Time  Interface
+WEST_LEAF101    N/A             2      UP     00:00:32   Ethernet1/1        <----------------------- LEAF 101
+WEST_LEAF102    N/A             2      UP     00:00:32   Ethernet1/2        <----------------------- LEAF 102
+WEST_LEAF103    N/A             2      UP     00:00:28   Ethernet1/3        <----------------------- LEAF 103
 ```
+
 
 ---
 
