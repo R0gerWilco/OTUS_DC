@@ -27,10 +27,11 @@
 - Используется аутентификация BGP-соседей  с применением хеширования MD5 на PtP линках
 - IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4
 - Spine-коммутаторы указаны как route-reflector, Leaf-коммутаторы   - как RR Client
+- Тюнинг таймеров
 
 
 ---
-### **4. Типовая конфигурация BGP на примере коммутатора WEST_LEAF101**
+### **4. Типовая конфигурация BGP Leaf-коммутатора на примере устройства WEST_LEAF101**
 ```
 feature bgp
 
@@ -62,9 +63,23 @@ router bgp 64777
     description SPINE_202
 ```
 
-### **5. Типичное состояние процесса ISIS на примере коммутатора WEST_LEAF101**
+### **5. иповая конфигурация BGP Spine-коммутатора на примере устройства WEST_SPINE201**
 ```bash
+router bgp 64777
+  router-id 10.0.0.201
+  address-family ipv4 unicast
+    network 10.0.0.201/32
 
+  neighbor 10.201.0.0/16
+    remote-as 64777
+    password 3 9e502c7af527f9b0
+    timers 3 9
+    maximum-peers 24
+
+    address-family ipv4 unicast
+      route-reflector-client
+      next-hop-self all
+      soft-reconfiguration inbound
 ```
 
 ---
