@@ -12,7 +12,7 @@
 
 ### **1. Топология сети IPv4 лабораторной работы в PnetLAB**:
  
- Используем уже привычную по предыдущим урокам и домашним заданиям схему сети, но на сей раз только её IPv4 вариант 
+ Используем уже привычную по предыдущим домашним заданиям схему сети, но на сей раз только её IPv4 вариант 
 
  [<img src="WEST_DC_topology_for_BGP.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module2/Lesson05/WEST_DC_topology_for_BGP.JPG)
 
