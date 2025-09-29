@@ -30,126 +30,41 @@
 
 
 ---
-### **4. Типовая конфигурация ISIS на примере коммутатора WEST_LEAF101**
-```bash
-feature isis
+### **4. Типовая конфигурация BGP на примере коммутатора WEST_LEAF101**
+```
+feature bgp
 
-key chain ISISKey
-  key 1
-    key-string 7 073a0f686b3b35242e
+route-map REDISTRIBUTE_CONNECTED permit 10
+  match interface loopback0
 
-router isis UNDERLAY
-  net 49.0001.0000.0000.0101.00
-  is-type level-2
+router bgp 64777
+  router-id 10.0.0.101
+  log-neighbor-changes
   address-family ipv4 unicast
-  address-family ipv6 unicast
+    redistribute direct route-map REDISTRIBUTE_CONNECTED
+    maximum-paths ibgp 8
 
+  template peer SPINE
+    remote-as 64777
+    password 3 9e502c7af527f9b0
+    timers 3 9
+    address-family ipv4 unicast
+      soft-reconfiguration inbound
 
-  interface Ethernet1/6
-  description TO_SPINE201
-  no switchport
-  no ip redirects
-  ip address 10.201.101.2/30
-  ip verify unicast source reachable-via rx
-  ipv6 address 10:201:101::2/127
-  no ipv6 redirects
-  isis network point-to-point
-  isis circuit-type level-2
-  isis authentication-type md5
-  isis authentication key-chain ISISKey
-  ip router isis UNDERLAY
-  ipv6 router isis UNDERLAY
-  no isis passive-interface level-2
-  no shutdown
+  neighbor 10.201.101.1
+    inherit peer SPINE
+    remote-as 64777
+    description SPINE_201
 
-interface Ethernet1/7
-  description TO_SPINE202
-  no switchport
-  no ip redirects
-  ip address 10.202.101.2/30
-  ip verify unicast source reachable-via rx
-  ipv6 address 10:202:101::2/127
-  no ipv6 redirects
-  isis network point-to-point
-  isis circuit-type level-2
-  isis authentication-type md5
-  isis authentication key-chain ISISKey
-  ip router isis UNDERLAY
-  ipv6 router isis UNDERLAY
-  no isis passive-interface level-2
-  no shutdown
-
-interface loopback0
-  description LoopBack_LEAF101
-  ip address 10.0.0.101/32
-  ipv6 address 10::101/128
-  ip router isis UNDERLAY
-  ipv6 router isis UNDERLAY
+  neighbor 10.202.101.1
+    inherit peer SPINE
+    remote-as 64777
+    description SPINE_202
 ```
 
 ### **5. Типичное состояние процесса ISIS на примере коммутатора WEST_LEAF101**
 ```bash
-WEST_LEAF101# show isis UNDERLAY 
-ISIS process : UNDERLAY
- Instance number :  1
- UUID: 1090519320
- Process ID 14477
-VRF: default
-  System ID : 0000.0000.0101  IS-Type : L2
-  SAP : 412  Queue Handle : 13
-  Maximum LSP MTU: 1492
-  Stateful HA enabled
-  Graceful Restart enabled. State: Inactive 
-  Last graceful restart status : none
-  Start-Mode Complete
-  BFD IPv4 is globally disabled for ISIS process: UNDERLAY
-  BFD IPv6 is globally disabled for ISIS process: UNDERLAY
-  Topology-mode is base
-  Metric-style : advertise(wide), accept(narrow, wide)
-  Area address(es) :
-    49.0001
-  Process is up and running
-  VRF ID: 1
-  Stale routes during non-graceful controlled restart
-  Enable resolution of L3->L2 address for ISIS adjacency
-  SRTE: Not registered
-  OAM: Not registered
-  SR IPv4 is not configured and disabled for ISIS process: UNDERLAY
-  SR IPv6 is not configured and disabled for ISIS process: UNDERLAY
-SRv6 feature not present
-  Interfaces supported by IS-IS :
-    loopback0
-    Ethernet1/6
-    Ethernet1/7
-  Topology : 0
-  Address family IPv4 unicast :
-    Number of interface : 3
-    Distance : 115
-    Default-information not originated
-  Address family IPv6 unicast :
-    Number of interface : 3
-    Distance : 115
-    Default-information not originated
-  Topology : 2
-  Address family IPv4 unicast :
-    Number of interface : 0
-    Distance : 115
-    Default-information not originated
-  Address family IPv6 unicast :
-    Number of interface : 0
-    Distance : 115
-    Default-information not originated
-  Level1
-  No auth type and keychain
-  Auth check set
-  Level2
-  No auth type and keychain
-  Auth check set
-  L1 Next SPF: Inactive
-  L2 Next SPF: Inactive
-  Attached bits
-   MT-0 L-1: Att 0 Spf-att 0 Cfg 1 Adv-att 0
-   MT-0 L-2: Att 0 Spf-att 0 Cfg 1 Adv-att 0
+
 ```
 
 ---
