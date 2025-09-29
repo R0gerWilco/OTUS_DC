@@ -165,7 +165,7 @@ IP Route Table for VRF "default"
     *via 10.202.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
 ```
 
-**Детализация маршуртной информации для сетей, доступных через multipath на примере 10.0.0.102/32:**
+**Детализация маршуртной информации для сетей, доступных через multipath, на примере маршрута к Loopback LEAF102 10.0.0.102/32:**
 ```bash
 WEST_LEAF101# show ip bgp 10.0.0.102/32
 BGP routing table information for VRF default, address family IPv4 Unicast
@@ -180,14 +180,14 @@ th, no labeled nexthop, in rib
   AS-Path: NONE, path sourced internal to AS
     10.202.101.1 (metric 0) from 10.202.101.1 (10.0.0.202)
       Origin incomplete, MED 0, localpref 100, weight 0
-      **Originator: 10.0.0.102 Cluster list: 10.0.0.202 **                                          
+      Originator: 10.0.0.102 Cluster list: 10.0.0.202                   <-----------------------  Originator-ID: LEAF 102 Cluster-ID: SPINE 202                                          
 
   Advertised path-id 1
   Path type: internal, path is valid, is best path, no labeled nexthop, in rib
   AS-Path: NONE, path sourced internal to AS
     10.201.101.1 (metric 0) from 10.201.101.1 (10.0.0.201)
       Origin incomplete, MED 0, localpref 100, weight 0
-      **Originator: 10.0.0.102 Cluster list: 10.0.0.201 **
+      Originator: 10.0.0.102 Cluster list: 10.0.0.201                    <-----------------------  Originator-ID: LEAF 102 Cluster-ID: SPINE 201  
 
 ```
 
@@ -221,7 +221,7 @@ PING 10.0.0.201 (10.0.0.201): 56 data bytes
 3 packets transmitted, 3 packets received, 0.00% packet loss
 round-trip min/avg/max = 26.339/28.582/32.959 ms
 
-WEST_LEAF101#  ping 10.0.0.202 source-interface Loopback0 coun 3        <-----------------------Loopback SPINE 202
+WEST_LEAF101#  ping 10.0.0.202 source-interface Loopback0 coun 3       <-----------------------Loopback SPINE 202
 PING 10.0.0.202 (10.0.0.202): 56 data bytes
 64 bytes from 10.0.0.202: icmp_seq=0 ttl=254 time=56.165 ms
 64 bytes from 10.0.0.202: icmp_seq=1 ttl=254 time=60.278 ms
