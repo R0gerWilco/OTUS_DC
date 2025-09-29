@@ -180,14 +180,14 @@ th, no labeled nexthop, in rib
   AS-Path: NONE, path sourced internal to AS
     10.202.101.1 (metric 0) from 10.202.101.1 (10.0.0.202)
       Origin incomplete, MED 0, localpref 100, weight 0
-      Originator: 10.0.0.102 Cluster list: 10.0.0.202        <-----------------------Originator-ID: LEAF 102 Cluster-ID: SPINE 202                                          
+      Originator: 10.0.0.102 Cluster list: 10.0.0.202        <--------------------Originator-ID:LEAF 102 Cluster-ID:SPINE 202                                          
 
   Advertised path-id 1
   Path type: internal, path is valid, is best path, no labeled nexthop, in rib
   AS-Path: NONE, path sourced internal to AS
     10.201.101.1 (metric 0) from 10.201.101.1 (10.0.0.201)
       Origin incomplete, MED 0, localpref 100, weight 0
-      Originator: 10.0.0.102 Cluster list: 10.0.0.201        <-----------------------Originator-ID: LEAF 102 Cluster-ID: SPINE 201  
+      Originator: 10.0.0.102 Cluster list: 10.0.0.201        <--------------------Originator-ID:LEAF 102 Cluster-ID:SPINE 201  
 
 ```
 
