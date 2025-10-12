@@ -25,46 +25,48 @@
 ### **2. Входные данные**:
 
 - Underlay протокол маршрутизации - OSPF, Overlay протокол маршрутизации - iBGP согласно [рекомендованному дизайну для Cisco Nexus](https://www.cisco.com/c/en/us/td/docs/dcn/whitepapers/cisco-vxlan-bgp-evpn-design-and-implementation-guide.html#IGPvseBGPUnderlay)
-- Общая AS в BGP домене 64777
-- IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4. Адресация для Leaf 104 добавлена
-- Введена в эксплуатацию  подсеть для серверов 172.16.10.0/24 
+- Общая AS в BGP домене 64777, spine коммутаторы настроены как Route-reflector
+- IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4. Адресация для Leaf 104 добавлена  в файл первого ДЗ
+- Введена в эксплуатацию  подсеть для серверов 172.16.10.0/24 c VLAN ID 10 и ассоциированным с ним VNI 10010. Адресация для клиентов в этой сети также указана в топологии сети для данного ДЗ
 
 
 
 ---
-### **3. Типовая конфигурация BGP Leaf-коммутатора на примере устройства WEST_LEAF101**
-```
+### **3. Типовая конфигурация BGP Overlay и VxLAN Leaf-коммутатора на примере устройства WEST_LEAF101**
+```bash
+
 feature bgp
 
-route-map REDISTRIBUTE_CONNECTED permit 10
-  match interface loopback0
+vlan 10
+  name SERVERS_10
+  vn-segment 10010
+
+
+ interface nve1
+  no shutdown
+  description SERVERS_VLAN_10
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 10010
+    ingress-replication protocol bgp
 
 router bgp 64777
   router-id 10.0.0.101
-  log-neighbor-changes
-  address-family ipv4 unicast
-    redistribute direct route-map REDISTRIBUTE_CONNECTED
-    maximum-paths ibgp 8
-
   template peer SPINE
     remote-as 64777
-    password 3 9e502c7af527f9b0
-    timers 3 9
-    address-family ipv4 unicast
-      soft-reconfiguration inbound
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
 
-  neighbor 10.201.101.1
+ neighbor 10.0.0.201
     inherit peer SPINE
-    remote-as 64777
-    description SPINE_201
-
-  neighbor 10.202.101.1
+ 
+  neighbor 10.0.0.202
     inherit peer SPINE
-    remote-as 64777
-    description SPINE_202
 ```
 
-### **4. Типовая конфигурация BGP Spine-коммутатора на примере устройства WEST_SPINE201**
+### **4. Типовая конфигурация BGP Overlay Spine-коммутатора на примере устройства WEST_SPINE201**
 ```bash
 feature bgp
 
