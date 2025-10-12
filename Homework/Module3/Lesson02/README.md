@@ -43,14 +43,17 @@ vlan 10
   name SERVERS_10
   vn-segment 10010
 
-
  interface nve1
   no shutdown
-  description SERVERS_VLAN_10
   host-reachability protocol bgp
   source-interface loopback0
   member vni 10010
     ingress-replication protocol bgp
+
+evpn
+  vni 10010 l2
+    rd auto
+    route-target both 64777:10010
 
 router bgp 64777
   router-id 10.0.0.101
@@ -124,54 +127,85 @@ nve1      10.0.0.102                              Up    CP        1d13h    n/a  
 nve1      10.0.0.103                              Up    CP        1d13h    n/a           <----------------------- LEAF 102            
 nve1      10.0.0.104                              Up    CP        1d13h    n/a           <----------------------- LEAF 103
 
+
+
 ```
 
 ---
 
-### **6. Проверка таблицы маршрутизации на SPINE коммутаторах**
+### **6. Проверка связности клиентских устройств в серверной сети 172.16.10.0/24**
 
 ```bash
 
-WEST_SPINE201# show ip route bgp-64777
-10.0.0.101/32, ubest/mbest: 1/0                                           <----------------------- LEAF 101
-    *via 10.201.101.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.102/32, ubest/mbest: 1/0                                           <----------------------- LEAF 102
-    *via 10.201.102.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.103/32, ubest/mbest: 1/0                                           <----------------------- LEAF 103
-    *via 10.201.103.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
+WEST_ESXI_101#show run int vlan 10
+interface Vlan10
+ ip address 172.16.10.101 255.255.255.0
+end
 
+WEST_ESXI_101#ping 172.16.10.103 sour Vlan10
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.10.103, timeout is 2 seconds:
+Packet sent with a source address of 172.16.10.101 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 50/66/93 ms
+WEST_ESXI_101#
 
-WEST_SPINE202# show ip route bgp-64777
-10.0.0.101/32, ubest/mbest: 1/0                                           <----------------------- LEAF 101
-    *via 10.202.101.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.102/32, ubest/mbest: 1/0                                           <----------------------- LEAF 102
-    *via 10.202.102.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.103/32, ubest/mbest: 1/0                                           <----------------------- LEAF 103
-    *via 10.202.103.2, [200/0], 1d02h, bgp-64777, internal, tag 64777
 ```
-
 
 ---
 
-### **7. Проверка BGP маршрутов на примере LEAF коммутатора WEST_LEAF101**
-```bash
-WEST_LEAF101# show ip route bgp-64777 
-IP Route Table for VRF "default"
-'*' denotes best ucast next-hop
-'**' denotes best mcast next-hop
-'[x/y]' denotes [preference/metric]
-'%<string>' in via output denotes VRF <string>
+### **7. Проверка EVPN  route-type 2/3 маршрутов на LEAF коммутаторах  WEST_LEAF101 и WEST_LEAF103**
 
-10.0.0.102/32, ubest/mbest: 2/0                                         <-----------------------Loopback LEAF 102 via SPINE 201 & SPINE 202
-    *via 10.201.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
-    *via 10.202.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.103/32, ubest/mbest: 2/0                                         <-----------------------Loopback LEAF 103 via SPINE 201 & SPINE 202
-    *via 10.201.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
-    *via 10.202.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.201/32, ubest/mbest: 1/0                                         <-----------------------Loopback SPINE 201 via SPINE 201
-    *via 10.201.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
-10.0.0.202/32, ubest/mbest: 1/0                                         <-----------------------Loopback SPINE 202 via SPINE 202
-    *via 10.202.101.1, [200/0], 1d02h, bgp-64777, internal, tag 64777
+**LEAF101**
+
+```bash
+WEST_LEAF101# show bgp l2vpn evpn  vni-id 10010
+BGP routing table information for VRF default, address family L2VPN EVPN
+BGP table version is 132, Local Router ID is 10.0.0.101
+Status: s-suppressed, x-deleted, S-stale, d-dampened, h-history, *-valid, >-best
+Path type: i-internal, e-external, c-confed, l-local, a-aggregate, r-redist, I-i
+njected
+Origin codes: i - IGP, e - EGP, ? - incomplete, | - multipath, & - backup, 2 - b
+est2
+
+   Network                                               Next Hop          Metric     LocPrf     Weight Path
+Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
+
+*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101                        100      32768 i   <-----------------------Хост WEST_ESXI_101, подключенный к своему порту
+>i[2]:[0]:[0]:[48]:[50b0.f900.800a]:[0]:[0.0.0.0]/216  10.0.0.103                        100          0 i    <-----------------------Хост WEST_ESXI_103, подключенный к LEAF 103
+
+*>l[3]:[0]:[32]:[10.0.0.101]/88                         10.0.0.101                        100      32768 i   <-----------------------Cвой собственный Loopback
+*>i[3]:[0]:[32]:[10.0.0.102]/88                         10.0.0.102                        100          0 i   <-----------------------Loopback LEAF 102 
+*>i[3]:[0]:[32]:[10.0.0.103]/88                         10.0.0.103                        100          0 i   <-----------------------Loopback LEAF 103
+*>i[3]:[0]:[32]:[10.0.0.104]/88                         10.0.0.104                        100          0 i   <-----------------------Loopback LEAF 104
+
+
+```
+
+**LEAF103**
+
+```bash
+WEST_LEAF103# show bgp l2vpn evpn  vni-id 10010
+BGP routing table information for VRF default, address family L2VPN EVPN
+BGP table version is 132, Local Router ID is 10.0.0.103
+Status: s-suppressed, x-deleted, S-stale, d-dampened, h-history, *-valid, >-best
+Path type: i-internal, e-external, c-confed, l-local, a-aggregate, r-redist, I-i
+njected
+Origin codes: i - IGP, e - EGP, ? - incomplete, | - multipath, & - backup, 2 - b
+est2
+
+   Network                                               Next Hop          Metric     LocPrf     Weight Path
+Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
+
+*>i[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101                        100          0 i    <-----------------------Хост WEST_ESXI_101, подключенный к LEAF 101
+*>l[2]:[0]:[0]:[48]:[50b0.f900.800a]:[0]:[0.0.0.0]/216 10.0.0.103                        100      32768 i    <-----------------------Хост WEST_ESXI_103, подключенный к своему порту
+
+*>l[3]:[0]:[32]:[10.0.0.101]/88                         10.0.0.101                        100          0 i   <-----------------------Loopback LEAF 101
+*>i[3]:[0]:[32]:[10.0.0.102]/88                         10.0.0.102                        100          0 i   <-----------------------Loopback LEAF 102 
+*>i[3]:[0]:[32]:[10.0.0.103]/88                         10.0.0.103                        100     32768  i   <-----------------------Cвой собственный Loopback
+*>i[3]:[0]:[32]:[10.0.0.104]/88                         10.0.0.104                        100          0 i   <-----------------------Loopback LEAF 104
+
+
 ```
 
 **Детализация маршуртной информации для сетей, доступных через multipath, на примере маршрута к Loopback LEAF102 10.0.0.102/32:**
