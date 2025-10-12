@@ -8,5 +8,5 @@
   #####  [Построение Underlay сети(ISIS)_//_ДЗ](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module2/Lesson03)
   #####  [Построение Underlay сети(eBGP)_//_ДЗ](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module2/Lesson05)
 #### [Модуль 3 VxLAN](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module3)
-  #####  [VxLAN EVPN L2 VNI)_//_ДЗ](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module3/Lesson02)
+  #####  [VxLAN EVPN L2 VNI_//_ДЗ](https://github.com/R0gerWilco/OTUS_DC/tree/main/Homework/Module3/Lesson02)
 
