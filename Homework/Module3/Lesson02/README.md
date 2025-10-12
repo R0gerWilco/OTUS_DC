@@ -123,9 +123,9 @@ Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
 WEST_LEAF101# show nve peers
 Interface Peer-IP                                 State LearnType Uptime   Router-Mac       
 --------- --------------------------------------  ----- --------- -------- ----------
-nve1      10.0.0.102                              Up    CP        1d13h    n/a           <----------------------- LEAF 101
-nve1      10.0.0.103                              Up    CP        1d13h    n/a           <----------------------- LEAF 102            
-nve1      10.0.0.104                              Up    CP        1d13h    n/a           <----------------------- LEAF 103
+nve1      10.0.0.102                              Up    CP        1d13h    n/a           <----------------------- LEAF 102
+nve1      10.0.0.103                              Up    CP        1d13h    n/a           <----------------------- LEAF 103            
+nve1      10.0.0.104                              Up    CP        1d13h    n/a           <----------------------- LEAF 104
 
 
 
