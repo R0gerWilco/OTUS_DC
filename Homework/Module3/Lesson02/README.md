@@ -151,7 +151,6 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 50/66/93 ms
 WEST_ESXI_101#
 
 ```
-
 ---
 
 ### **7. Проверка EVPN  route-type 2/3 маршрутов на LEAF коммутаторах  WEST_LEAF101 и WEST_LEAF103**
@@ -206,35 +205,10 @@ Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
 *>i[3]:[0]:[32]:[10.0.0.104]/88                         10.0.0.104                        100          0 i   <-----------------------Loopback LEAF 104
 
 
-```
-
-**Детализация маршуртной информации для сетей, доступных через multipath, на примере маршрута к Loopback LEAF102 10.0.0.102/32:**
-```bash
-WEST_LEAF101# show ip bgp 10.0.0.102/32
-BGP routing table information for VRF default, address family IPv4 Unicast
-BGP routing table entry for 10.0.0.102/32, version 14
-Paths: (2 available, best #2)
-Flags: (0x8008001a) (high32 00000000) on xmit-list, is in urib, is best urib rou
-te, is in HW
-Multipath: iBGP
-
-  Path type: internal, path is valid, not best reason: Neighbor Address, multipa
-th, no labeled nexthop, in rib
-  AS-Path: NONE, path sourced internal to AS
-    10.202.101.1 (metric 0) from 10.202.101.1 (10.0.0.202)
-      Origin incomplete, MED 0, localpref 100, weight 0
-      Originator: 10.0.0.102 Cluster list: 10.0.0.202        <--------------------Originator-ID:LEAF 102 Cluster-ID:SPINE 202                                          
-
-  Advertised path-id 1
-  Path type: internal, path is valid, is best path, no labeled nexthop, in rib
-  AS-Path: NONE, path sourced internal to AS
-    10.201.101.1 (metric 0) from 10.201.101.1 (10.0.0.201)
-      Origin incomplete, MED 0, localpref 100, weight 0
-      Originator: 10.0.0.102 Cluster list: 10.0.0.201        <--------------------Originator-ID:LEAF 102 Cluster-ID:SPINE 201  
-
-```
+---
 
 ### **8. Проверка доступности  IPv4 Loopback-интерфейсов коммутаторов фабрики с WEST_LEAF101**
+
 ```bash
 WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0 coun 3      <-----------------------Loopback LEAF 102
 PING 10.0.0.102 (10.0.0.102): 56 data bytes
@@ -274,6 +248,7 @@ PING 10.0.0.202 (10.0.0.202): 56 data bytes
 round-trip min/avg/max = 53.179/56.54/60.278 ms
 ```
 
+---
 
 
 
