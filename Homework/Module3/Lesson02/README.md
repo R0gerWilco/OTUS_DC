@@ -32,10 +32,12 @@
 
 
 ---
-### **3. Типовая конфигурация BGP Overlay и VxLAN Leaf-коммутатора на примере устройства WEST_LEAF101**
+### **3. Типовая конфигурация BGP Overlay и VxLAN EVPN Leaf-коммутатора на примере устройства WEST_LEAF101**
 ```bash
 
 feature bgp
+feature vn-segment-vlan-based
+feature nv overlay
 
 vlan 10
   name SERVERS_10
@@ -68,56 +70,62 @@ router bgp 64777
 
 ### **4. Типовая конфигурация BGP Overlay Spine-коммутатора на примере устройства WEST_SPINE201**
 ```bash
+
 feature bgp
 
-router bgp 64777
+ router bgp 64777
   router-id 10.0.0.201
-  address-family ipv4 unicast
-    network 10.0.0.201/32
-
-  neighbor 10.201.0.0/16
+  template peer LEAF
     remote-as 64777
-    password 3 9e502c7af527f9b0
-    timers 3 9
-    maximum-peers 24
-
-    address-family ipv4 unicast
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
       route-reflector-client
-      next-hop-self all
-      soft-reconfiguration inbound
+
+neighbor 10.0.0.101
+    inherit peer LEAF
+    remote-as 64777
+
+ neighbor 10.0.0.102
+    inherit peer LEAF
+    remote-as 64777
+
+ neighbor 10.0.0.103
+    inherit peer LEAF
+    remote-as 64777
+
+neighbor 10.0.0.104
+    inherit peer LEAF
+    remote-as 64777
 ```
 
 ---
 
-### **5. Проверка таблицы BGP соседства на SPINE коммутаторах**
+### **5. Проверка таблицы BGP соседства и VxLAN peers на LEAF коммутаторах на примере устройства WEST_LEAF101**
 ```bash
 
-WEST_SPINE201# show ip bgp  sum
-BGP summary information for VRF default, address family IPv4 Unicast
-BGP router identifier 10.0.0.201, local AS number 64777
-BGP table version is 24, IPv4 Unicast config peers 4, capable peers 3
-4 network entries and 4 paths using 960 bytes of memory
-BGP attribute entries [2/328], BGP AS path entries [0/0]
-BGP community entries [0/0], BGP clusterlist entries [0/0]
+WEST_LEAF101# show bgp l2vpn  evpn sum
+BGP summary information for VRF default, address family L2VPN EVPN
+BGP router identifier 10.0.0.101, local AS number 64777
+BGP table version is 128, L2VPN EVPN config peers 2, capable peers 2
+7 network entries and 10 paths using 1680 bytes of memory
+BGP attribute entries [7/1148], BGP AS path entries [0/0]
+BGP community entries [0/0], BGP clusterlist entries [6/24]
 Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.201.101.2    4 64777   32316   32308       24    0    0    1d02h 1                  <----------------------- LEAF 101
-10.201.102.2    4 64777   32394   32382       24    0    0    1d02h 1                  <----------------------- LEAF 102
-10.201.103.2    4 64777   32397   32388       24    0    0    1d02h 1                  <----------------------- LEAF 103
+10.0.0.201      4 64777    2299    2283      128    0    0    1d13h 3                   <----------------------- SPINE 201
+10.0.0.202      4 64777    2309    2294      128    0    0    1d13h 3                   <----------------------- SPINE 202
 
-WEST_SPINE202# show ip bgp sum
-BGP summary information for VRF default, address family IPv4 Unicast
-BGP router identifier 10.0.0.202, local AS number 64777
-BGP table version is 9, IPv4 Unicast config peers 4, capable peers 3
-4 network entries and 4 paths using 960 bytes of memory
-BGP attribute entries [2/328], BGP AS path entries [0/0]
-BGP community entries [0/0], BGP clusterlist entries [0/0]
 
-Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.202.101.2    4 64777   31767   31761        9    0    0    1d02h 1                   <----------------------- LEAF 101
-10.202.102.2    4 64777   31777   31770        9    0    0    1d02h 1                   <----------------------- LEAF 102
-10.202.103.2    4 64777   31756   31748        9    0    0    1d02h 1                   <----------------------- LEAF 103
+WEST_LEAF101# show nve peers
+Interface Peer-IP                                 State LearnType Uptime   Router-Mac       
+--------- --------------------------------------  ----- --------- -------- ----------
+nve1      10.0.0.102                              Up    CP        1d13h    n/a           <----------------------- LEAF 101
+nve1      10.0.0.103                              Up    CP        1d13h    n/a           <----------------------- LEAF 102            
+nve1      10.0.0.104                              Up    CP        1d13h    n/a           <----------------------- LEAF 103
 
 ```
+
 ---
 
 ### **6. Проверка таблицы маршрутизации на SPINE коммутаторах**
