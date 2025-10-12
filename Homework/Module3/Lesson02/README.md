@@ -207,7 +207,7 @@ Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
 ```
 ---
 
-### **8. Скриншот BGP-апдейта с EVPN  route-type 2 маршрута для endpoint WEST_ESXI_103  на коммутаторе  WEST_LEAF101**
+### **8. Скриншот BGP-апдейта с EVPN  route-type 2 маршрутом для endpoint`а WEST_ESXI_103 172.16.10.103  на коммутаторе  WEST_LEAF101**
 
  [<img src="BGP_update_reachable_route.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/BGP_update_reachable_route.JPG)
 
