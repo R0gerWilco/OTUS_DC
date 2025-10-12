@@ -134,13 +134,12 @@ nve1      10.0.0.104                              Up    CP        1d13h    n/a  
 ---
 
 ### **6. Проверка связности клиентских устройств в серверной сети 172.16.10.0/24**
-
+**LEAF101**
 ```bash
 
 WEST_ESXI_101#show run int vlan 10
 interface Vlan10
  ip address 172.16.10.101 255.255.255.0
-end
 
 WEST_ESXI_101#ping 172.16.10.103 sour Vlan10
 Type escape sequence to abort.
@@ -151,6 +150,20 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 50/66/93 ms
 WEST_ESXI_101#
 
 ```
+**LEAF103**
+```bash
+WEST_ESXI_103#show run int vlan 10
+interface Vlan10
+ ip address 172.16.10.103 255.255.255.0
+
+WEST_ESXI_103#ping 172.16.10.101 sou Vlan10
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.10.101, timeout is 2 seconds:
+Packet sent with a source address of 172.16.10.103 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 71/121/202 ms
+```
+
 ---
 
 ### **7. Проверка EVPN  route-type 2/3 маршрутов на LEAF коммутаторах  WEST_LEAF101 и WEST_LEAF103**
