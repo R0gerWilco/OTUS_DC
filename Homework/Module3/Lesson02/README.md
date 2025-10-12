@@ -1,4 +1,4 @@
-### Домашнее задание в модуле №3 урок №2 VxLAN EVPN L2
+### Домашнее задание в модуле №3 урок №2 VxLAN EVPN L2 VNI
 
 ##### Цель задания
 - Настройте BGP peering между Leaf и Spine в AF l2vpn evpn
