@@ -209,49 +209,7 @@ Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
 
 ### **8. Скриншот BGP-апдейта с EVPN  route-type 2 маршрута для endpoint WEST_ESXI_103  на коммутаторе  WEST_LEAF101**
 
-
-```bash
-WEST_LEAF101# ping 10.0.0.102 source-interface Loopback0 coun 3      <-----------------------Loopback LEAF 102
-PING 10.0.0.102 (10.0.0.102): 56 data bytes
-64 bytes from 10.0.0.102: icmp_seq=0 ttl=253 time=52.252 ms
-64 bytes from 10.0.0.102: icmp_seq=1 ttl=253 time=31.474 ms
-64 bytes from 10.0.0.102: icmp_seq=2 ttl=253 time=66.654 ms
---- 10.0.0.102 ping statistics ---
-3 packets transmitted, 3 packets received, 0.00% packet loss
-round-trip min/avg/max = 31.474/50.126/66.654 ms
-
-WEST_LEAF101# ping 10.0.0.103 source-interface Loopback0 coun 3       <-----------------------Loopback LEAF 103
-PING 10.0.0.103 (10.0.0.103): 56 data bytes
-64 bytes from 10.0.0.103: icmp_seq=0 ttl=253 time=84.047 ms
-64 bytes from 10.0.0.103: icmp_seq=1 ttl=253 time=63.98 ms
-64 bytes from 10.0.0.103: icmp_seq=2 ttl=253 time=122.398 ms
---- 10.0.0.103 ping statistics ---
-3 packets transmitted, 3 packets received, 0.00% packet loss
-round-trip min/avg/max = 63.98/90.141/122.398 ms
-
-
-WEST_LEAF101#  ping 10.0.0.201 source-interface Loopback0 coun 3       <-----------------------Loopback SPINE 201
-PING 10.0.0.201 (10.0.0.201): 56 data bytes
-64 bytes from 10.0.0.201: icmp_seq=0 ttl=254 time=26.45 ms
-64 bytes from 10.0.0.201: icmp_seq=1 ttl=254 time=26.339 ms
-64 bytes from 10.0.0.201: icmp_seq=2 ttl=254 time=32.959 ms
---- 10.0.0.201 ping statistics ---
-3 packets transmitted, 3 packets received, 0.00% packet loss
-round-trip min/avg/max = 26.339/28.582/32.959 ms
-
-WEST_LEAF101#  ping 10.0.0.202 source-interface Loopback0 coun 3       <-----------------------Loopback SPINE 202
-PING 10.0.0.202 (10.0.0.202): 56 data bytes
-64 bytes from 10.0.0.202: icmp_seq=0 ttl=254 time=56.165 ms
-64 bytes from 10.0.0.202: icmp_seq=1 ttl=254 time=60.278 ms
-64 bytes from 10.0.0.202: icmp_seq=2 ttl=254 time=53.179 ms
---- 10.0.0.202 ping statistics ---
-3 packets transmitted, 3 packets received, 0.00% packet loss
-round-trip min/avg/max = 53.179/56.54/60.278 ms
-```
-
----
-
-
+ [<img src="BGP_update_reachable_route.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/BGP_update_reachable_route.JPG)
 
 
 
