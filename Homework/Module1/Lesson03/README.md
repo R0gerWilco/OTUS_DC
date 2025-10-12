@@ -43,6 +43,7 @@
 | **WEST_LEAF101**  | `10.0.0.101/32`  | `/32`  | Underlay   |
 | **WEST_LEAF102**  | `10.0.0.102/32`  | `/32`  | Underlay   |
 | **WEST_LEAF103**  | `10.0.0.103/32`  | `/32`  | Underlay   |
+| **WEST_LEAF104**  | `10.0.0.104/32`  | `/32`  | Underlay   |
 
 #### **4.2. P2P-линки (Spine ↔ Leaf)**
 Используем **`/30`**  для экономии адресов (_Примечание: Nexus 9K в лабе не захотел работать с /31 P2P-линками Spine ↔ Leaf , в качестве  quick workaround используется /30 адресация_)   
@@ -59,10 +60,11 @@
 | **Spine201 ↔ Leaf101**  | `10.201.101.1/30` | `10.201.101.2/30` | `10.201.101.0/30`  |
 | **Spine201 ↔ Leaf102**  | `10.201.102.1/30` | `10.201.102.2/30` | `10.201.102.0/30`  |
 | **Spine201 ↔ Leaf103**  | `10.201.103.1/30` | `10.201.103.2/30` | `10.201.103.0/30`  |
+| **Spine201 ↔ Leaf104**  | `10.201.104.1/30` | `10.201.104.2/30` | `10.201.104.0/30`  |
 | **Spine202 ↔ Leaf101**  | `10.202.101.1/30` | `10.202.101.2/30` | `10.202.101.0/30`  |
 | **Spine202 ↔ Leaf102**  | `10.202.102.1/30` | `10.202.102.2/30` | `10.202.102.0/30`  |
 | **Spine202 ↔ Leaf103**  | `10.202.103.1/30` | `10.202.103.2/30` | `10.202.103.0/30`  |
-
+| **Spine202 ↔ Leaf104**  | `10.202.104.1/30` | `10.202.104.2/30` | `10.202.104.0/30`  |
 
 #### **4.3. Management-сеть (Out-of-Band)**
 | Устройство        | Management-адрес | Маска  |
@@ -72,6 +74,7 @@
 | **WEST_LEAF101**  | `192.168.1.101`  | `/24`  |
 | **WEST_LEAF102**  | `192.168.1.102`  | `/24`  |
 | **WEST_LEAF103**  | `192.168.1.103`  | `/24`  |
+| **WEST_LEAF104**  | `192.168.1.104`  | `/24`  |
 
 ---
 #### **5. Пример конфигурации (WEST_SPINE201 ↔ WEST_LEAF101)**
@@ -104,7 +107,9 @@ WEST_LEAF101(9L07512J2Q8)
 WEST_LEAF102(9I4LLD12KMX)
                     Eth1/2         127    R S s     N9K-9000v     Eth1/6        
 WEST_LEAF103(9XEJ69W8IKX)
-                    Eth1/3         167    R S s     N9K-9000v     Eth1/6        
+                    Eth1/3         167    R S s     N9K-9000v     Eth1/6
+WEST_LEAF104(9E5CORPY8ZD)
+                    Eth1/4         126    R S s     N9K-9000v     Eth1/6          
 
 WEST_SPINE201# show ip arp
 IP ARP Table for context default
@@ -112,7 +117,8 @@ Total number of entries: 3
 Address         Age       MAC Address     Interface       Flags
 10.201.101.2    00:02:27  5093.1500.e707  Ethernet1/1     
 10.201.102.2    00:10:37  5079.0600.f207  Ethernet1/2     
-10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3  
+10.201.103.2    00:17:57  5076.3c00.f707  Ethernet1/3
+10.201.104.2    00:17:36  50ea.3b00.f507  Ethernet1/4     
 ```
 
 ### **7. Проверка доступности LEAF коммутаторов с WEST_SPINE202**
@@ -124,7 +130,9 @@ WEST_LEAF101(9L07512J2Q8)
 WEST_LEAF102(9I4LLD12KMX)
                     Eth1/2         121    R S s     N9K-9000v     Eth1/7        
 WEST_LEAF103(9XEJ69W8IKX)
-                    Eth1/3         178    R S s     N9K-9000v     Eth1/7     
+                    Eth1/3         178    R S s     N9K-9000v     Eth1/7
+WEST_LEAF104(9E5CORPY8ZD)
+                    Eth1/4         126    R S s     N9K-9000v     Eth1/7       
 
 WEST_SPINE202# show ip arp
 IP ARP Table for context default
@@ -132,5 +140,6 @@ Total number of entries: 3
 Address         Age       MAC Address     Interface       Flags
 10.202.101.2    00:09:10  5093.1500.e707  Ethernet1/1     
 10.202.102.2    00:09:10  5079.0600.f207  Ethernet1/2     
-10.202.103.2    00:08:57  5076.3c00.f707  Ethernet1/3    
+10.202.103.2    00:08:57  5076.3c00.f707  Ethernet1/3
+10.202.104.2    00:17:36  50ea.3b00.f507  Ethernet1/4      
 ```
