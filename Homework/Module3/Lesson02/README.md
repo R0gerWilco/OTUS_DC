@@ -25,7 +25,7 @@
 ### **2. Входные данные**:
 
 
-- Underlay протокол маршрутизации - OSPF, Overlay протокол маршрутизации - iBGP согласно [рекомендованному дизайну для Cisco Nexus]_(https://www.cisco.com/c/en/us/td/docs/dcn/whitepapers/cisco-vxlan-bgp-evpn-design-and-implementation-guide.html#IGPvseBGPUnderlay)
+- Underlay протокол маршрутизации - OSPF, Overlay протокол маршрутизации - iBGP согласно [рекомендованному дизайну для Cisco Nexus](https://www.cisco.com/c/en/us/td/docs/dcn/whitepapers/cisco-vxlan-bgp-evpn-design-and-implementation-guide.html#IGPvseBGPUnderlay)
 - Общая AS в BGP домене 64777
 - Loopback0 всех коммутаторов  = Router-ID в BGP домене
 - Используется аутентификация BGP-соседей  с применением хеширования MD5
