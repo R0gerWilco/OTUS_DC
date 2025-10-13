@@ -26,86 +26,77 @@
 - Введена в эксплуатацию  подсеть для серверов 172.16.20.0/24 c VLAN ID 20 и ассоциированным с ним VNI 10020. Шлюз по умолчанию в этой подсети 172.16.20.1
 - Обе подсети выше добавлены в VRF INTERNAL
 - Поскольку у нас в лабе Nexus`ы, то тип IRB без вариантов симметричный, для маршрутизации между VNI введен в эксплуатацию VLAN 777 и ассоциированный с ним VNI 10777
-- Для внутренних подсетей с VNI 10010 и VNI 10020 настроен ARP suppression, для чего на всех LEAF коммутаторах проведен тюнинг TCAM для выделения достаточного кусочка этой памяти на работы фичи
-
-
-  
-
-
+- Для внутренних подсетей с VNI 10010 и VNI 10020 настроен ARP suppression, для чего на всех LEAF коммутаторах проведен тюнинг TCAM для выделения достаточного кусочка этой памяти на работу фичи. Как это все работает для Nexus 9000v решительно непонятно, но без заветной команды фича ARP suppression не включалась.
 
 ---
-### **3. Типовая конфигурация BGP Overlay и VxLAN EVPN Leaf-коммутатора на примере устройства WEST_LEAF101**
+### **3. Типовая конфигурация VxLAN EVPN Leaf-коммутатора на примере устройства WEST_LEAF101**
 ```bash
 
-feature bgp
 feature vn-segment-vlan-based
 feature nv overlay
+
+hardware access-list tcam region arp-ether 256 double-wide
 
 vlan 10
   name SERVERS_10
   vn-segment 10010
+vlan 20
+  name SERVERS_20
+  vn-segment 10020
+vlan 777
+  vn-segment 10777
 
- interface nve1
+vrf context INTERNAL
+  vni 10777
+  rd auto
+  address-family ipv4 unicast
+    route-target import 64777:10777
+    route-target import 64777:10777 evpn
+    route-target export 64777:10777
+    route-target export 64777:10777 evpn
+
+interface Vlan10
+  no shutdown
+  vrf member INTERNAL
+  ip address 172.16.10.1/24
+  fabric forwarding mode anycast-gateway
+
+interface Vlan20
+  no shutdown
+  vrf member INTERNAL
+  ip address 172.16.20.1/24
+  fabric forwarding mode anycast-gateway
+
+interface Vlan777
+  no shutdown
+  mtu 9216
+  vrf member INTERNAL
+  ip forward
+
+interface nve1
   no shutdown
   host-reachability protocol bgp
   source-interface loopback0
   member vni 10010
+    suppress-arp
     ingress-replication protocol bgp
+  member vni 10020
+    suppress-arp
+    ingress-replication protocol bgp
+  member vni 10777 associate-vrf
 
 evpn
   vni 10010 l2
-    rd auto
-    route-target both 64777:10010
+    route-target import 64777:10010
+    route-target export 64777:10010
+  vni 10020 l2
+    route-target import 64777:10020
+    route-target export 64777:10020
 
-router bgp 64777
-  router-id 10.0.0.101
-  template peer SPINE
-    remote-as 64777
-    update-source loopback0
-    address-family l2vpn evpn
-      send-community
-      send-community extended
 
- neighbor 10.0.0.201
-    inherit peer SPINE
- 
-  neighbor 10.0.0.202
-    inherit peer SPINE
 ```
 
 ### **4. Типовая конфигурация BGP Overlay Spine-коммутатора на примере устройства WEST_SPINE201**
-```bash
-
-feature bgp
-
- router bgp 64777
-  router-id 10.0.0.201
-  template peer LEAF
-    remote-as 64777
-    update-source loopback0
-    address-family l2vpn evpn
-      send-community
-      send-community extended
-      route-reflector-client
-
-neighbor 10.0.0.101
-    inherit peer LEAF
-    remote-as 64777
-
- neighbor 10.0.0.102
-    inherit peer LEAF
-    remote-as 64777
-
- neighbor 10.0.0.103
-    inherit peer LEAF
-    remote-as 64777
-
-neighbor 10.0.0.104
-    inherit peer LEAF
-    remote-as 64777
-```
-
----
 
 ### **5. Проверка таблицы BGP соседства и VxLAN peers на LEAF коммутаторах на примере устройства WEST_LEAF101**
 ```bash
@@ -135,13 +126,48 @@ nve1      10.0.0.104                              Up    CP        1d13h    n/a  
 
 ---
 
-### **6. Проверка связности клиентских устройств в серверной сети 172.16.10.0/24**
+### **6. Проверка ARP-таблиц на LEAF коммутаторах и клиентских устройствах**
 **LEAF101**
 ```bash
+WEST_LEAF101# show ip arp vrf INTERNAL 
+IP ARP Table for context INTERNAL
+Total number of entries: 2
+Address         Age       MAC Address     Interface       
+172.16.10.101   00:05:08  504c.d600.800a  Vlan10        <----------- Хост WEST_ESXI_101 в VLAN 10  
+172.16.20.101   00:05:05  504c.d600.8014  Vlan20        <----------- Хост WEST_ESXI_101 в VLAN 20  
+```
 
-WEST_ESXI_101#show run int vlan 10
-interface Vlan10
- ip address 172.16.10.101 255.255.255.0
+**LEAF103**
+```bash
+WEST_LEAF103# show ip arp vrf INTERNAL
+Total number of entries: 2
+Address         Age       MAC Address     Interface       
+172.16.20.103   00:05:10  50b0.f900.8014  Vlan20        <----------- Хост WEST_ESXI_103 в VLAN 10
+172.16.10.103   00:04:54  50b0.f900.800a  Vlan10        <----------- Хост WEST_ESXI_103 в VLAN 20      
+```
+**WEST_ESXI_101**
+```bash
+WEST_ESXI_101#show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  172.16.10.1             0   0001.0001.0001  ARPA   Vlan10         <----------- Virtual MAC VLAN 10
+Internet  172.16.10.101           -   504c.d600.800a  ARPA   Vlan10         <----------- Свой IP адрес в VLAN 10
+Internet  172.16.10.103           8   50b0.f900.800a  ARPA   Vlan10         <----------- Хост WEST_ESXI_103 в VLAN 10
+Internet  172.16.20.1             9   0001.0001.0001  ARPA   Vlan20         <----------- Virtual MAC VLAN 20
+Internet  172.16.20.101           -   504c.d600.8014  ARPA   Vlan20         <----------- Хост WEST_ESXI_103 в VLAN 20
+Internet  172.16.20.103         252   50b0.f900.8014  ARPA   Vlan20         <----------- Свой IP адрес в VLAN 20
+```
+**WEST_ESXI_103**
+```bash
+WEST_ESXI_103#sho ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  172.16.10.1             0   0001.0001.0001  ARPA   Vlan10         <----------- Virtual MAC VLAN 10
+Internet  172.16.10.101           -   504c.d600.800a  ARPA   Vlan10         <----------- Хост WEST_ESXI_101 в VLAN 10
+Internet  172.16.10.103           8   50b0.f900.800a  ARPA   Vlan10         <----------- Свой IP адрес в VLAN 10
+Internet  172.16.20.1             9   0001.0001.0001  ARPA   Vlan20         <----------- Virtual MAC VLAN 20
+Internet  172.16.20.101           -   504c.d600.8014  ARPA   Vlan20         <----------- Свой IP адрес в VLAN 20
+Internet  172.16.20.103         252   50b0.f900.8014  ARPA   Vlan20         <----------- Хост WEST_ESXI_101 в VLAN 20 
+```
+
 
 WEST_ESXI_101#ping 172.16.10.103 sour Vlan10
 Type escape sequence to abort.
