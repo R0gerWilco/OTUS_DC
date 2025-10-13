@@ -209,7 +209,7 @@ segid: 10777 tunnelid: 0xa000065 encap: VXLAN
 ### **7. Проверка связности на клиентских устройствах между VLAN 10 и VLAN 20**
 **WEST_ESXI_101**
 ```bash
-WEST_ESXI_101#ping 172.16.20.103 sour Vlan10
+WEST_ESXI_101#ping 172.16.20.103 sour Vlan10                                    <----------- пинг узла в  VLAN 20 от имени VLAN 10
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 172.16.20.103, timeout is 2 seconds:
 Packet sent with a source address of 172.16.10.101 
@@ -219,7 +219,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 75/96/149 ms
 ```
 **WEST_ESXI_103**
 ```bash
-WEST_ESXI_103#ping 172.16.10.101 sou Vlan20
+WEST_ESXI_103#ping 172.16.10.101 sou Vlan20                                      <----------- пинг узла в  VLAN 10 от имени VLAN 20
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 172.16.10.101, timeout is 2 seconds:
 Packet sent with a source address of 172.16.20.103 
@@ -234,7 +234,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 77/104/137 msg/max =
 **LEAF101**
 
 ```bash
-WEST_LEAF101# show bgp l2vpn evpn  vni-id 10010 
+WEST_LEAF101# show bgp l2vpn evpn  
 BGP routing table information for VRF default, address family L2VPN EVPN
 BGP table version is 4905, Local Router ID is 10.0.0.101
 Status: s-suppressed, x-deleted, S-stale, d-dampened, h-history, *-valid, >-best
@@ -259,37 +259,11 @@ Route Distinguisher: 10.0.0.101:32787    (L2VNI 10020)
     Route Distinguisher: 10.0.0.101:3    (L3VNI 10777)
 *>i[2]:[0]:[0]:[48]:[50b0.f900.800a]:[32]:[172.16.10.103]/272 10.0.0.103                        100          0 i
 *>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i
-
-
 ```
 
-**LEAF103**
 
-```bash
-WEST_LEAF103# show bgp l2vpn evpn  vni-id 10010
-BGP routing table information for VRF default, address family L2VPN EVPN
-BGP table version is 132, Local Router ID is 10.0.0.103
-Status: s-suppressed, x-deleted, S-stale, d-dampened, h-history, *-valid, >-best
-Path type: i-internal, e-external, c-confed, l-local, a-aggregate, r-redist, I-i
-njected
-Origin codes: i - IGP, e - EGP, ? - incomplete, | - multipath, & - backup, 2 - b
-est2
+### **8. Скриншот BGP-апдейта с EVPN  route-type 2 маршрутом для endpoint`а WEST_ESXI_103 172.16.20.103  на коммутаторе  WEST_LEAF101**
 
-   Network                                               Next Hop  Metric LocPrf     Weight Path
-Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
-
-*>i[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101         100          0 i    <-----------Хост WEST_ESXI_101, подключенный к LEAF 101
-*>l[2]:[0]:[0]:[48]:[50b0.f900.800a]:[0]:[0.0.0.0]/216 10.0.0.103         100      32768 i    <-----------Хост WEST_ESXI_103, подключенный к своему порту
-
-*>l[3]:[0]:[32]:[10.0.0.101]/88                         10.0.0.101        100          0 i   <------------Loopback LEAF 101
-*>i[3]:[0]:[32]:[10.0.0.102]/88                         10.0.0.102        100          0 i   <------------Loopback LEAF 102 
-*>i[3]:[0]:[32]:[10.0.0.103]/88                         10.0.0.103        100     32768  i   <------------Cвой собственный Loopback
-*>i[3]:[0]:[32]:[10.0.0.104]/88                         10.0.0.104        100          0 i   <------------Loopback LEAF 104
-
-```
----
-
-### **8. Скриншот BGP-апдейта с EVPN  route-type 2 маршрутом для endpoint`а WEST_ESXI_103 172.16.10.103  на коммутаторе  WEST_LEAF101**
 
  [<img src="BGP_update_reachable_route.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/BGP_update_reachable_route.JPG)
 
