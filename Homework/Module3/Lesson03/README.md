@@ -22,8 +22,8 @@
 
 - Конфигурация Underlay/Overlay протоколов не менялась по сравнению с [прошлым ДЗ для L2VNI](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/README.md)
 - IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4.
-- Введена в эксплуатацию  подсеть для серверов 172.16.10.0/24 c VLAN ID 10 и ассоциированным с ним VNI 10010. Шлюз по умолчанию в этой подсети 172.16.10.1
-- Введена в эксплуатацию  подсеть для серверов 172.16.20.0/24 c VLAN ID 20 и ассоциированным с ним VNI 10020. Шлюз по умолчанию в этой подсети 172.16.20.1
+- Введена в эксплуатацию  подсеть для серверов 172.16.10.0/24 c VLAN ID 10 и ассоциированным с ним VNI 10010. Шлюз по умолчанию в этой подсети 172.16.10.1. Клиент в этой сети подключен к LEAF 101
+- Введена в эксплуатацию  подсеть для серверов 172.16.20.0/24 c VLAN ID 20 и ассоциированным с ним VNI 10020. Шлюз по умолчанию в этой подсети 172.16.20.1. Клиент в этой сети подключен к LEAF 103
 - Обе подсети выше добавлены в VRF INTERNAL
 - Поскольку у нас в лабе Nexus`ы, то тип IRB без вариантов симметричный, для маршрутизации между VNI введен в эксплуатацию VLAN 777 и ассоциированный с ним VNI 10777
 - Для внутренних подсетей с VNI 10010 и VNI 10020 настроен ARP suppression, для чего на всех LEAF коммутаторах проведен тюнинг TCAM для выделения достаточного кусочка этой памяти на работу фичи. Как это все работает для Nexus 9000v решительно непонятно, но без заветной команды фича ARP suppression не включалась.
@@ -40,7 +40,7 @@ hardware access-list tcam region arp-ether 256 double-wide
 vlan 10
   name SERVERS_10
   vn-segment 10010
-vlan 20
+vlan 10
   name SERVERS_20
   vn-segment 10020
 vlan 777
@@ -145,7 +145,6 @@ IP ARP Table for context INTERNAL
 Total number of entries: 2
 Address         Age       MAC Address     Interface       
 172.16.10.101   00:05:08  504c.d600.800a  Vlan10        <----------- Хост WEST_ESXI_101 в VLAN 10  
-172.16.20.101   00:05:05  504c.d600.8014  Vlan20        <----------- Хост WEST_ESXI_101 в VLAN 20  
 ```
 
 **LEAF103**
@@ -153,30 +152,21 @@ Address         Age       MAC Address     Interface
 WEST_LEAF103# show ip arp vrf INTERNAL
 Total number of entries: 2
 Address         Age       MAC Address     Interface       
-172.16.20.103   00:05:10  50b0.f900.8014  Vlan20        <----------- Хост WEST_ESXI_103 в VLAN 10
-172.16.10.103   00:04:54  50b0.f900.800a  Vlan10        <----------- Хост WEST_ESXI_103 в VLAN 20      
+172.16.20.103   00:05:10  50b0.f900.8014  Vlan20        <----------- Хост WEST_ESXI_103 в VLAN 20    
 ```
 **WEST_ESXI_101**
 ```bash
 WEST_ESXI_101#show ip arp
 Protocol  Address          Age (min)  Hardware Addr   Type   Interface
-Internet  172.16.10.1             0   0001.0001.0001  ARPA   Vlan10         <----------- Virtual MAC VLAN 10
-Internet  172.16.10.101           -   504c.d600.800a  ARPA   Vlan10         <----------- Свой IP адрес в VLAN 10
-Internet  172.16.10.103           8   50b0.f900.800a  ARPA   Vlan10         <----------- Хост WEST_ESXI_103 в VLAN 10
-Internet  172.16.20.1             9   0001.0001.0001  ARPA   Vlan20         <----------- Virtual MAC VLAN 20
-Internet  172.16.20.101           -   504c.d600.8014  ARPA   Vlan20         <----------- Хост WEST_ESXI_103 в VLAN 20
-Internet  172.16.20.103         252   50b0.f900.8014  ARPA   Vlan20         <----------- Свой IP адрес в VLAN 20
+Internet  172.16.10.1             6   0001.0001.0001  ARPA   Vlan10    <----------- Virtual MAC VLAN 10
+Internet  172.16.10.101           -   504c.d600.800a  ARPA   Vlan10    <----------- Свой IP адрес в VLAN 10
 ```
 **WEST_ESXI_103**
 ```bash
 WEST_ESXI_103#sho ip arp
 Protocol  Address          Age (min)  Hardware Addr   Type   Interface
-Internet  172.16.10.1             0   0001.0001.0001  ARPA   Vlan10         <----------- Virtual MAC VLAN 10
-Internet  172.16.10.101           -   504c.d600.800a  ARPA   Vlan10         <----------- Хост WEST_ESXI_101 в VLAN 10
-Internet  172.16.10.103           8   50b0.f900.800a  ARPA   Vlan10         <----------- Свой IP адрес в VLAN 10
-Internet  172.16.20.1             9   0001.0001.0001  ARPA   Vlan20         <----------- Virtual MAC VLAN 20
-Internet  172.16.20.101           -   504c.d600.8014  ARPA   Vlan20         <----------- Свой IP адрес в VLAN 20
-Internet  172.16.20.103         252   50b0.f900.8014  ARPA   Vlan20         <----------- Хост WEST_ESXI_101 в VLAN 20 
+Internet  172.16.20.1             0   0001.0001.0001  ARPA   Vlan20        <----------- Virtual MAC VLAN 20
+Internet  172.16.20.103           -   50b0.f900.8014  ARPA   Vlan20        <----------- Свой IP адрес в VLAN 20
 ```
 
 ### **6. Проверка маршрутов  для клиентских IP на LEAF коммутаторах**
@@ -185,11 +175,7 @@ Internet  172.16.20.103         252   50b0.f900.8014  ARPA   Vlan20         <---
 ```bash
 WEST_LEAF101# show ip route bgp-64777  vrf INTERNAL
 
-172.16.10.103/32, ubest/mbest: 1/0                                             <----------- Хост WEST_ESXI_103 в VLAN 10
-    *via 10.0.0.103%default, [200/0], 22:47:07, bgp-64777, internal, tag 64777 (evpn)
-segid: 10777 tunnelid: 0xa000067 encap: VXLAN
- 
-172.16.20.103/32, ubest/mbest: 1/0                                             <----------- Хост WEST_ESXI_103 в VLAN 20
+172.16.20.103/32, ubest/mbest: 1/0                                             <----------- Хост WEST_ESXI_103 в VLAN 20 через L3VNI 10777
     *via 10.0.0.103%default, [200/0], 22:35:10, bgp-64777, internal, tag 64777 (evpn)
 segid: 10777 tunnelid: 0xa000067 encap: VXLAN
  ```
@@ -197,13 +183,11 @@ segid: 10777 tunnelid: 0xa000067 encap: VXLAN
 **LEAF103**
 ```bash
 WEST_LEAF103#  show ip route bgp-64777  vrf INTERNAL
-172.16.10.101/32, ubest/mbest: 1/0                                              <----------- Хост WEST_ESXI_101 в VLAN 10
+
+172.16.10.101/32, ubest/mbest: 1/0                                              <----------- Хост WEST_ESXI_101 в VLAN 10  через L3VNI 10777
     *via 10.0.0.101%default, [200/0], 1d01h, bgp-64777, internal, tag 64777 (evpn)
 segid: 10777 tunnelid: 0xa000065 encap: VXLAN
- 
-172.16.20.101/32, ubest/mbest: 1/0                                              <----------- Хост WEST_ESXI_101 в VLAN 10
-    *via 10.0.0.101%default, [200/0], 1d01h, bgp-64777, internal, tag 64777 (evpn)
-segid: 10777 tunnelid: 0xa000065 encap: VXLAN
+
 ```
 
 ### **7. Проверка связности на клиентских устройствах между VLAN 10 и VLAN 20**
@@ -245,20 +229,16 @@ est2
 
    Network            Next Hop            Metric     LocPrf     Weight Path
 Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
-*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101                        100      32768 i        
-*>i[2]:[0]:[0]:[48]:[50b0.f900.800a]:[0]:[0.0.0.0]/216 10.0.0.103                        100          0 i        
-*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[32]:[172.16.10.101]/272 10.0.0.101                        100      32768 i
-*>i[2]:[0]:[0]:[48]:[50b0.f900.800a]:[32]:[172.16.10.103]/272 10.0.0.103                        100          0 i 
+*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101                        100      32768 i         
+*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[32]:[172.16.10.101]/272 10.0.0.101                        100      32768 i  <----------- Хост WEST_ESXI_101 в VNI 10010  
+
 
 Route Distinguisher: 10.0.0.101:32787    (L2VNI 10020)
-*>l[2]:[0]:[0]:[48]:[504c.d600.8014]:[0]:[0.0.0.0]/216  10.0.0.101                        100      32768 i
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[0]:[0.0.0.0]/216  10.0.0.103                        100          0 i
-*>l[2]:[0]:[0]:[48]:[504c.d600.8014]:[32]:[172.16.20.101]/272 10.0.0.101                        100      32768 i
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i
+*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[0]:[0.0.0.0]/216  10.0.0.103                        100          0 i     
+*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i  <----------- Хост WEST_ESXI_103 в VNI 10020 
 
     Route Distinguisher: 10.0.0.101:3    (L3VNI 10777)
-*>i[2]:[0]:[0]:[48]:[50b0.f900.800a]:[32]:[172.16.10.103]/272 10.0.0.103                        100          0 i
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i
+*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i  <----------- Хост WEST_ESXI_103 в L3 VNI 10070 
 ```
 
 
