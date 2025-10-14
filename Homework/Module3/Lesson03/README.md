@@ -175,7 +175,7 @@ Internet  172.16.20.103           -   50b0.f900.8014  ARPA   Vlan20        <----
 ```bash
 WEST_LEAF101# show ip route bgp-64777  vrf INTERNAL
 
-172.16.20.103/32, ubest/mbest: 1/0                                             <----------- Хост WEST_ESXI_103 в VLAN 20 через L3VNI 10777
+172.16.20.103/32, ubest/mbest: 1/0                                     <----------- Хост WEST_ESXI_103 в VLAN 20 через L3VNI 10777
     *via 10.0.0.103%default, [200/0], 22:35:10, bgp-64777, internal, tag 64777 (evpn)
 segid: 10777 tunnelid: 0xa000067 encap: VXLAN
  ```
@@ -184,7 +184,7 @@ segid: 10777 tunnelid: 0xa000067 encap: VXLAN
 ```bash
 WEST_LEAF103#  show ip route bgp-64777  vrf INTERNAL
 
-172.16.10.101/32, ubest/mbest: 1/0                                              <----------- Хост WEST_ESXI_101 в VLAN 10  через L3VNI 10777
+172.16.10.101/32, ubest/mbest: 1/0                                      <----------- Хост WEST_ESXI_101 в VLAN 10  через L3VNI 10777
     *via 10.0.0.101%default, [200/0], 1d01h, bgp-64777, internal, tag 64777 (evpn)
 segid: 10777 tunnelid: 0xa000065 encap: VXLAN
 
@@ -193,7 +193,7 @@ segid: 10777 tunnelid: 0xa000065 encap: VXLAN
 ### **7. Проверка связности на клиентских устройствах между VLAN 10 и VLAN 20**
 **WEST_ESXI_101**
 ```bash
-WEST_ESXI_101#ping 172.16.20.103 sour Vlan10                                    <----------- пинг узла в  VLAN 20 от имени VLAN 10
+WEST_ESXI_101#ping 172.16.20.103 sour Vlan10                              <----------- пинг узла в  VLAN 20 от имени VLAN 10
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 172.16.20.103, timeout is 2 seconds:
 Packet sent with a source address of 172.16.10.101 
@@ -203,7 +203,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 75/96/149 ms
 ```
 **WEST_ESXI_103**
 ```bash
-WEST_ESXI_103#ping 172.16.10.101 sou Vlan20                                      <----------- пинг узла в  VLAN 10 от имени VLAN 20
+WEST_ESXI_103#ping 172.16.10.101 sou Vlan20                               <----------- пинг узла в  VLAN 10 от имени VLAN 20
 Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 172.16.10.101, timeout is 2 seconds:
 Packet sent with a source address of 172.16.20.103 
