@@ -118,7 +118,7 @@ Peer-Ip: 10.0.0.103
     Time since Create   : 1d01h
     Configured VNIs     : 10010,10020,10777
     Provision State     : peer-add-complete
-    Learnt CP VNIs      : 10010,10020,10777                    <--------------- Появился Learnt L3 VNI от LEAF 103  
+    Learnt CP VNIs      : 10010,10020,10777                    <--------------- Появился Learnt L3 VNI 10777 от LEAF 103  
     vni assignment mode : SYMMETRIC
     Peer Location       : N/A
 Peer-Ip: 10.0.0.104
