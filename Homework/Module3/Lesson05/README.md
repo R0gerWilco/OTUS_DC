@@ -228,11 +228,25 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 249/377/620 ms
 
 
 #### **7.1. Скриншот дампа траффика с распределением ICMP пакетов на аплинках клиентского устройства WEST_ESXI101   **
+
 Интересный момент распределения ICMP траффика на клиентском устройстве.
 
 Порты Gi0/0 и Gi0/1 собраны в агрегированный канал к обоим лифам
 
-Хеш-функция  LACP протокола упорно распределяет ICMP request и половину ICMP reply в порт Gi0/1, вторая половина ICMP reply приходит в порт Gi0/0
+Настройки балансировки:
+
+**LEAF101/LEAF102**
+```bash
+port-channel load-balance src-dst ip rotate 32 concatenation
+```
+
+**WEST_ESXI_103**
+```bash
+port-channel load-balance src-dst-mac
+```
+
+
+Хеш-функция  LACP протокола распределяет ICMP request и половину ICMP reply в порт Gi0/1, вторая половина ICMP reply приходит в порт Gi0/0
 
  [<img src="VXLAN_VPC_load-balance_ICMP.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/VXLAN_VPC_load-balance_ICMP.JPG)
 
