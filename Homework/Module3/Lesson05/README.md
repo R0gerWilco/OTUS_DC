@@ -250,7 +250,7 @@ WEST_LEAF101# show ip arp vrf INTERNAL
 IP ARP Table for context INTERNAL
 Total number of entries: 1
 Address         Age       MAC Address     Interface       Flags
-172.16.10.101   0.052940  504c.d600.800a  Vlan10          +             <----------- Флаг + означает, что  хост доступен через peer-link
+172.16.10.101   0.052940  504c.d600.800a  Vlan10          +      <----------- Флаг + означает, что  хост доступен через PL
 ````
 
 
