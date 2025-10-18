@@ -1,4 +1,4 @@
-### Домашнее задание в модуле №3 урок №3 VxLAN VPC
+### Домашнее задание в модуле №3 урок №5 VxLAN VPC
 
 ##### Цель задания
 Настроить отказоустойчивое подключение клиентов с использованием EVPN Multihoming.
@@ -150,7 +150,7 @@ vPC peer config role-priority   : 102
 
 WEST_LEAF101# show ip route bgp-64777  vrf INTERNAL
 
-172.16.20.103/32, ubest/mbest: 1/0                                    <----------- Хост WEST_ESXI_103 в VLAN 20 через L3VNI 10777 и secondary IP vPC пары LEAF103/LEAF104 
+172.16.20.103/32, ubest/mbest: 1/0                                    <----------- Хост WEST_ESXI_103 в VLAN 20 via L3VNI 10777 и secondary IP vPC пары LEAF103/LEAF104 
     *via 192.168.103.104%default, [200/0], 11:55:34, bgp-64777, internal, tag 64777 (evpn)
  segid: 10777 tunnelid: 0xc0a86768 encap: VXLAN
  
@@ -160,36 +160,15 @@ WEST_LEAF101# show ip route bgp-64777  vrf INTERNAL
 ```bash
 WEST_LEAF103# show ip route bgp-64777  vrf INTERNAL
 
-172.16.10.101/32, ubest/mbest: 1/0                                     <----------- Хост WEST_ESXI_101 в VLAN 10  через L3VNI 10777 и secondary IP vPC пары LEAF101/LEAF102
+172.16.10.101/32, ubest/mbest: 1/0                                     <----------- Хост WEST_ESXI_101 в VLAN 10  via L3VNI 10777 и secondary IP vPC пары LEAF101/LEAF102
     *via 192.168.101.102%default, [200/0], 12:09:50, bgp-64777, internal, tag 64
 777 (evpn) segid: 10777 tunnelid: 0xc0a86566 encap: VXLAN
 
 ```
 
-### **6. Проверка связности на клиентских устройствах между VLAN 10 и VLAN 20**
-**WEST_ESXI_101**
-```bash
-WEST_ESXI_101#ping 172.16.20.103 sour Vlan10                              <----------- пинг узла в  VLAN 20 от имени VLAN 10
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 172.16.20.103, timeout is 2 seconds:
-Packet sent with a source address of 172.16.10.101 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 218/470/797 ms
-
-```
-**WEST_ESXI_103**
-```bash
-WEST_ESXI_103#ping 172.16.10.101 sou Vlan20                               <----------- пинг узла в  VLAN 10 от имени VLAN 20
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 172.16.10.101, timeout is 2 seconds:
-Packet sent with a source address of 172.16.20.103 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 249/377/620 ms
-```
-
 ---
 
-### **8. Проверка EVPN  route-type 2 маршрутов для клиентских узлов на примере устройства  WEST_LEAF101**
+### **6. Проверка EVPN  route-type 2 маршрутов для клиентских узлов на примере устройства  WEST_LEAF101**
 
 **LEAF101**
 
@@ -211,46 +190,65 @@ Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
                       192.168.101.102                   100      32768 i
 
 Route Distinguisher: 10.0.0.103:32787
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[0]:[0.0.0.0]/216
+*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[0]:[0.0.0.0]/216 
                       192.168.103.104                   100          0 i
 * i                   192.168.103.104                   100          0 i
-* i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272
+* i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272                       <----------- Хост WEST_ESXI_103 в VNI 10020  от общего VTEP  адреса vPC пары LEAF103/LEAF104 192.168.103.104
                       192.168.103.104                   100          0 i
 *>i                   192.168.103.104                   100          0 i
 
 
-Route Distinguisher: 10.0.0.104:32787
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272
-                      192.168.103.104                   100          0 i
-* i                   192.168.103.104                   100          0 i
-*>i[3]:[0]:[32]:[192.168.103.104]/88
-                      192.168.103.104                   100          0 i
-* i                   192.168.103.104                   100          0 i
-
 Route Distinguisher: 10.0.0.101:3    (L3VNI 10777)
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272
+*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272                     <-----------  Хост WEST_ESXI_103 в L3 VNI 10777  от общего VTEP  адреса vPC пары LEAF103/LEAF104 192.168.103.104
                       192.168.103.104                   100          0 i
 * i                   192.168.103.104                   100          0 i
 
+```
 
-   Network            Next Hop            Metric     LocPrf     Weight Path
-Route Distinguisher: 10.0.0.101:32777    (L2VNI 10010)
-*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[0]:[0.0.0.0]/216 10.0.0.101                        100      32768 i         
-*>l[2]:[0]:[0]:[48]:[504c.d600.800a]:[32]:[172.16.10.101]/272 10.0.0.101                        100      32768 i  <----------- Хост WEST_ESXI_101 в VNI 10010  
+### **7. Проверка связности на клиентских устройствах между VLAN 10 и VLAN 20**
+**WEST_ESXI_101**
+```bash
+WEST_ESXI_101#ping 172.16.20.103 sour Vlan10                              <----------- пинг узла в  VLAN 20 от имени VLAN 10
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.20.103, timeout is 2 seconds:
+Packet sent with a source address of 172.16.10.101 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 218/470/797 ms
 
-
-Route Distinguisher: 10.0.0.101:32787    (L2VNI 10020)
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[0]:[0.0.0.0]/216  10.0.0.103                        100          0 i     
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i  <----------- Хост WEST_ESXI_103 в VNI 10020 
-
-    Route Distinguisher: 10.0.0.101:3    (L3VNI 10777)
-*>i[2]:[0]:[0]:[48]:[50b0.f900.8014]:[32]:[172.16.20.103]/272 10.0.0.103                        100          0 i  <----------- Хост WEST_ESXI_103 в L3 VNI 10070 
+```
+**WEST_ESXI_103**
+```bash
+WEST_ESXI_103#ping 172.16.10.101 sou Vlan20                               <----------- пинг узла в  VLAN 10 от имени VLAN 20
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.10.101, timeout is 2 seconds:
+Packet sent with a source address of 172.16.20.103 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 249/377/620 ms
 ```
 
 
-### **8. Скриншот дампа траффика с L3VNI**
 
- [<img src="WEST_DC_ping_for_VxLAN_L3VNI.JPG">](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/WEST_DC_ping_for_VxLAN_L3VNI.JPG)
+### **8. Проверка  отказоустойчивости сетевой связности  между клиентскими устройствами в VLAN 10 и VLAN 20**
+
+
+Скорее всего из-за особенностей виртуализации образа Nexus 9000v отключение линка между клиентским устройством и LEAF коммутатором на LEAF`e банально блекхолит траффик. 
+В общем, я столккнулся с той же проблемой, что и преподаватель Никита Николайчук на уроке по VPC.
+Нет у меня объяснения и тому факту, что один из LEAF`ов vPC пары видит ARP-запись клиентского узла  VLAN, а его сосед  - через peer-link, и при отключении   connected порта на первом лифе МАС пропадает, а второй все также видит клиентский МАС через свой peer-link, где его быть уже не должно
+
+```bash
+WEST_LEAF102# show ip arp vrf INTERNAL
+IP ARP Table for context INTERNAL
+Total number of entries: 1
+Address         Age       MAC Address     Interface       Flags
+172.16.10.101   0.018124  504c.d600.800a  Vlan10          
+
+WEST_LEAF101# show ip arp vrf INTERNAL
+IP ARP Table for context INTERNAL
+Total number of entries: 1
+Address         Age       MAC Address     Interface       Flags
+172.16.10.101   0.052940  504c.d600.800a  Vlan10          +             <----------- Флаг + означает, что  хост доступен через peer-link
+````
+
 
 
 
