@@ -91,45 +91,55 @@ interface loopback0
   ip router ospf UNDERLAY area 0.0.0.0
 
 ```
-### **4. Проверка таблицы  VxLAN peers на LEAF коммутаторах на примере устройства WEST_LEAF101**
+### **4. Диагностика vPC на LEAF коммутаторах на примере устройства WEST_LEAF101**
 ```bash
-WEST_LEAF101# show nve peers det
-Peer-Ip: 10.0.0.102
-    NVE Interface       : nve1
-    Peer State          : Up
-    Peer Uptime         : 1d01h
-    Router-Mac          : n/a
-    Peer First VNI      : 10010
-    Time since Create   : 1d01h
-    Configured VNIs     : 10010,10020,10777
-    Provision State     : peer-add-complete
-    Learnt CP VNIs      : 10010,10020
-    vni assignment mode : SYMMETRIC
-    Peer Location       : N/A
-Peer-Ip: 10.0.0.103
-    NVE Interface       : nve1
-    Peer State          : Up
-    Peer Uptime         : 1d01h
-    Router-Mac          : 5076.3c00.f707                       <--------------- Появился Router-MAC от LEAF 103
-    Peer First VNI      : 10010
-    Time since Create   : 1d01h
-    Configured VNIs     : 10010,10020,10777
-    Provision State     : peer-add-complete
-    Learnt CP VNIs      : 10010,10020,10777                    <--------------- Появился Learnt L3 VNI 10777 от LEAF 103  
-    vni assignment mode : SYMMETRIC
-    Peer Location       : N/A
-Peer-Ip: 10.0.0.104
-    NVE Interface       : nve1
-    Peer State          : Up
-    Peer Uptime         : 1d01h
-    Router-Mac          : n/a
-    Peer First VNI      : 10010
-    Time since Create   : 1d01h
-    Configured VNIs     : 10010,10020,10777
-    Provision State     : peer-add-complete
-    Learnt CP VNIs      : 10010,10020
-    vni assignment mode : SYMMETRIC
-    Peer Location       : N/A
+WEST_LEAF101# show vpc
+vPC domain id                     : 101 
+Peer status                       : peer adjacency formed ok      
+vPC keep-alive status             : peer is alive                 
+Configuration consistency status  : success 
+Per-vlan consistency status       : success                       
+Type-2 consistency status         : success 
+vPC role                          : primary                       
+Number of vPCs configured         : 1   
+Peer Gateway                      : Enabled
+Dual-active excluded VLANs        : -
+Graceful Consistency Check        : Enabled
+Auto-recovery status              : Disabled
+Delay-restore status              : Timer is off.(timeout = 30s)
+Delay-restore SVI status          : Timer is off.(timeout = 10s)
+Operational Layer3 Peer-router    : Disabled
+Virtual-peerlink mode             : Disabled
+
+vPC Peer-link status
+---------------------------------------------------------------------
+id    Port   Status Active vlans    
+--    ----   ------ -------------------------------------------------
+1     Po101  up     1,10,777                                                    
+         
+vPC status
+----------------------------------------------------------------------------
+Id    Port          Status Consistency Reason                Active vlans
+--    ------------  ------ ----------- ------                ---------------
+1     Po1           up     success     success               10           
+
+
+WEST_LEAF101# show vpc role
+
+vPC Role status
+----------------------------------------------------
+vPC role                        : primary                       
+Dual Active Detection Status    : 0
+vPC system-mac                  : 00:23:04:ee:be:65             
+vPC system-priority             : 32667
+vPC local system-mac            : 50:93:15:00:e7:07             
+vPC local role-priority         : 101 
+vPC local config role-priority  : 101 
+vPC peer system-mac             : 50:79:06:00:f2:07             
+vPC peer role-priority          : 102 
+vPC peer config role-priority   : 102 
+
+
 ```
 
 ---
