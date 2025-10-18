@@ -27,75 +27,68 @@
 
 - Конфигурация Underlay/Overlay протоколов не менялась по сравнению с [прошлым ДЗ для L2VNI](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module3/Lesson02/README.md)
 - IPv4-адресация сохранена с предыдущей топологии,  IP-адреса коммутаторов и PtP линков указаны в [README файле первого домашнего задания](https://github.com/R0gerWilco/OTUS_DC/blob/main/Homework/Module1/Lesson03/README.md), а также отображены на схеме сети  IPv4.
-- Введена в эксплуатацию  подсеть для серверов 172.16.10.0/24 c VLAN ID 10 и ассоциированным с ним VNI 10010. Шлюз по умолчанию в этой подсети 172.16.10.1. Клиент в этой сети подключен к LEAF 101
-- Введена в эксплуатацию  подсеть для серверов 172.16.20.0/24 c VLAN ID 20 и ассоциированным с ним VNI 10020. Шлюз по умолчанию в этой подсети 172.16.20.1. Клиент в этой сети подключен к LEAF 103
-- Обе подсети выше добавлены в VRF INTERNAL
-- Поскольку у нас в лабе Nexus`ы, то тип IRB без вариантов симметричный, для маршрутизации между VNI введен в эксплуатацию VLAN 777 и ассоциированный с ним VNI 10777
-- Для внутренних подсетей с VNI 10010 и VNI 10020 настроен ARP suppression, для чего на всех LEAF коммутаторах проведен тюнинг TCAM для выделения достаточного кусочка этой памяти на работу фичи. Как это все работает для Nexus 9000v решительно непонятно, но без заветной команды фича ARP suppression не включалась.
+- Оконечные узлы настроены в серверных подсетях 172.16.10.0/24 ( VLAN 10 / VNI 10010) и 172.16.20.0/24 ( VLAN 20 / VNI 10020) внутри VRF INTERNAL по агрегированному каналу с использованием протокола LACP
+- Поскольку у нас в лабе Nexus`ы, то вариант multihoming топологии   - vPC
+- vPC domain ID равен LEAF ID одного из двух коммутаторов пары, который также с помощью тюнинга role priority выбран vPC primary коммутатором
+- vPC keep-alive link настроен на mgmt0 интерфейсах коммутаторов
+
+  #### **2.1. Таблица данных для vPC конфигурации и secondary VTEP IP**
+| Устройство        | Loopback sec IP    | vPC domain | Peer-Link LACP ID |  
+|-------------------|--------------------|------------|-------------------|
+| **WEST_LEAF101**  | `192.168.101.102`  |   `101`    |       `101`       |
+| **WEST_LEAF102**  | `192.168.101.102`  |   `101`    |       `101`       |
+| **WEST_LEAF103**  | `192.168.103.104`  |   `103`    |       `103`       |
+| **WEST_LEAF104**  | `192.168.103.104`  |   `103`    |       `103`       |
+
 
 ---
-### **3. Типовая конфигурация VxLAN EVPN Leaf-коммутатора на примере устройства WEST_LEAF101**
+### **3. Типовая конфигурация vPC на  Leaf-коммутаторах на примере устройства WEST_LEAF101**
 ```bash
 
-feature vn-segment-vlan-based
-feature nv overlay
+feature vpc
 
-hardware access-list tcam region arp-ether 256 double-wide
+vpc domain 101
+  peer-switch
+  role priority 101
+  peer-keepalive destination 192.168.0.102 source 192.168.0.101
+  peer-gateway
+  ip arp synchronize
 
-vlan 10
-  name SERVERS_10
-  vn-segment 10010
-vlan 10
-  name SERVERS_20
-  vn-segment 10020
-vlan 777
-  vn-segment 10777
+interface port-channel101
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
 
-vrf context INTERNAL
-  vni 10777
-  rd auto
-  address-family ipv4 unicast
-    route-target import 64777:10777
-    route-target import 64777:10777 evpn
-    route-target export 64777:10777
-    route-target export 64777:10777 evpn
+interface Ethernet1/4
+  description **vPC peer-link **
+  switchport mode trunk
+  channel-group 101 mode active
 
-interface Vlan10
-  no shutdown
-  vrf member INTERNAL
-  ip address 172.16.10.1/24
-  fabric forwarding mode anycast-gateway
+interface Ethernet1/5
+  description **vPC peer-link **
+  switchport mode trunk
+  channel-group 101 mode active
 
-interface Vlan20
-  no shutdown
-  vrf member INTERNAL
-  ip address 172.16.20.1/24
-  fabric forwarding mode anycast-gateway
 
-interface Vlan777
-  no shutdown
-  vrf member INTERNAL
-  ip forward
+interface port-channel1
+  switchport mode trunk
+  switchport trunk allowed vlan 10
+  spanning-tree port type edge trunk
+  spanning-tree bpdufilter enable
+  mtu 9216
+  vpc 1
 
-interface nve1
-  no shutdown
-  host-reachability protocol bgp
-  source-interface loopback0
-  member vni 10010
-    suppress-arp
-    ingress-replication protocol bgp
-  member vni 10020
-    suppress-arp
-    ingress-replication protocol bgp
-  member vni 10777 associate-vrf
+interface Ethernet1/1
+  switchport mode trunk
+  switchport trunk allowed vlan 10
+  mtu 9216
+  channel-group 1 mode active
 
-evpn
-  vni 10010 l2
-    route-target import 64777:10010
-    route-target export 64777:10010
-  vni 10020 l2
-    route-target import 64777:10020
-    route-target export 64777:10020
+interface loopback0
+  description LoopBack_LEAF101
+  ip address 10.0.0.101/32
+  ip address 192.168.101.102/32 secondary
+  ip router ospf UNDERLAY area 0.0.0.0
 
 ```
 ### **4. Проверка таблицы  VxLAN peers на LEAF коммутаторах на примере устройства WEST_LEAF101**
